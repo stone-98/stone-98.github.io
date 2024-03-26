@@ -127,42 +127,48 @@
 <li>利用jmap生成该进程的堆转储快照</li>
 <li>利用mat查看快照分析问题</li>
 </ul>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">4 分钟读完 (大约567个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-01-29-JVM%E4%B9%8B%E5%A0%86%E7%A9%BA%E9%97%B4/">JVM之堆空间</a></p><div class="content"><h2 id="堆的核心概念"><a href="#堆的核心概念" class="headerlink" title="堆的核心概念"></a>堆的核心概念</h2><ul>
-<li>一个JVM示例只存在一个堆内存，堆也是Java内存管理的核心区域。</li>
-<li>Java堆区在JVM启动的时候即被创建，它的大小空间就被确定了。是JVM管理的最大一块内存空间。<ul>
-<li>堆内存的大小是可以调节的。</li>
-</ul>
-</li>
-<li>《Java虚拟机规范》规定，堆可以处于物理上不连续的内存空间中，但在逻辑上它应该是连续的。</li>
-<li>所有线程共享Java堆，在这里还可以划分线程私有的缓冲区(TLAB)。（这个存在的意义是堆内存是共享的，会存在线程安全问题，如果每次操作堆都进行互斥，那么堆空间的性能会很差，所以在这里划分出一个线程私有的缓冲区也就是TLAB）</li>
-</ul>
-<p>《Java虚拟机规范》中对Java堆的描述：几乎所有的对象实例以及数组都应当在运行时分配在堆上。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">1 分钟读完 (大约174个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2022-02-01_JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3/">JVM垃圾回收详解</a></p><div class="content"><p>JVM垃圾回收笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/29/2022-02-01_JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">4 分钟读完 (大约663个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-22-JVM%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">JVM性能调优</a></p><div class="content"><h2 id="性能监控"><a href="#性能监控" class="headerlink" title="性能监控"></a>性能监控</h2><p>监控点：</p>
 <ul>
-<li>在方法结束后，堆的对象并不会马上被移除，当在垃圾回收的时候才会被移除。</li>
-<li>堆是GC执行垃圾回收的重点区域。</li>
+<li>GC频繁</li>
+<li>CPU Load过高</li>
+<li>OOM</li>
+<li>内存泄漏</li>
+<li>死锁</li>
+<li>程序响应时间较长</li>
 </ul>
-<h2 id="设置堆内存大小与OOM"><a href="#设置堆内存大小与OOM" class="headerlink" title="设置堆内存大小与OOM"></a>设置堆内存大小与OOM</h2><h2 id=""><a href="#" class="headerlink" title=""></a></h2><ul>
-<li>Eden</li>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>一种侵入式收集运行性能数据的活动，它会影响应用的吞吐量或响应性。</p>
+<p>性能分析是针对性能问题的答复结果，关注的范围通常比性能监控更加集中。</p>
+<p>性能分析很少在生产环境下进行，通常是在质量评估、系统测试或者开发环境下进行，是性能监控之后的步骤。</p>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>一种为改善应用响应或吞吐量而更改参数、源代码、属性配置的活动，性能调优是在性能监控、性能分析之后的活动。</p>
+<p>主要就是改善GC和Full GC出现的次数以及减少内存占用。</p>
+<h2 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h2><ul>
+<li>停顿时间</li>
+<li>吞吐量：<ul>
+<li>单元时间内完成的工作量</li>
+<li>在GC中运行用户代码占总运行时间的比例（总运行时间：程序的运行时间+内存回收时间）吞吐量为1-1&#x2F;（1+n）。-XX：GCTimeRatio&#x3D;n</li>
 </ul>
-<h2 id="Minor-GC-MajorGC-FullGC"><a href="#Minor-GC-MajorGC-FullGC" class="headerlink" title="Minor GC &amp;&amp; MajorGC &amp;&amp; FullGC"></a>Minor GC &amp;&amp; MajorGC &amp;&amp; FullGC</h2><p>JVM进行垃圾回收，大部分回收的是新生代。</p>
-<p>针对Hotspot VM的实现，它里面的GC按照回收区域又分为两大类型：</p>
+</li>
+<li>并发数：同一时刻对服务器有实际交互的请求数</li>
+<li>内存占用：Java堆区所占用的内存大小</li>
+</ul>
+<h2 id="JDK自带的监控工具"><a href="#JDK自带的监控工具" class="headerlink" title="JDK自带的监控工具"></a>JDK自带的监控工具</h2><h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>查看正在运行的Java进程，类似jps命令可以方便查看Java进程的启动类、传入参数和Java虚拟机参数等信息。</p>
+<p>参数说明：</p>
 <ul>
-<li>部分收集：不是完整的收集整个JAVA堆的垃圾收集。<ul>
-<li>新生代收集：只是新生代的垃圾收集。</li>
-<li>老年代收集：只是老年代的垃圾收集。<ul>
-<li>目前只有CMS GC会有单独收集老年代的行为。</li>
-<li>注意：很多时候Major GC会和Full GC混淆使用，需要具体分辨是老年代回收还是整堆回收。</li>
+<li>-q：只输出进程ID</li>
+<li>-m：输出传入main方法的参数</li>
+<li>-l：输出完整的包名，应用主类名，jar的完全路径名</li>
+<li>-v：输出jvm参数</li>
+<li>-V：输出通过flag文件传递到JVM中的参数</li>
 </ul>
-</li>
-<li>混合收集（Mixed GC）：收集整个新生代以及部分老年代的垃圾收集。<ul>
-<li>目前，只有G1 GC有这种行为。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>整堆收集：收集整个JAVA堆和方法区的垃圾收集。</li>
-</ul>
-<h2 id="堆空间的参数总结"><a href="#堆空间的参数总结" class="headerlink" title="堆空间的参数总结"></a>堆空间的参数总结</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">42 分钟读完 (大约6327个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-17-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">JVM垃圾回收</a></p><div class="content"><h2 id="为什么要进行GC？"><a href="#为什么要进行GC？" class="headerlink" title="为什么要进行GC？"></a>为什么要进行GC？</h2><ul>
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>jstat是一款轻量级小工具，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括对Heap size和垃圾回收的监控。</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041577984">Jstat命令详解</a></p>
+<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p>jinfo它主要的作用就是实时查看和修改VM参数。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8d8aef212b25">jinfo命令详解</a></p>
+<h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>jmap是用多功能的命令。它可以生成Java程序dump文件，也可以查看堆内对象示例的统计信息、查看ClassLoader的信息以及finalizer队列。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a4ad53179df3">jmap详解</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sxdcgaq8080/p/11089664.html">https://www.cnblogs.com/sxdcgaq8080/p/11089664.html</a></p>
+<h3 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h3><h3 id="jcmd"><a href="#jcmd" class="headerlink" title="jcmd"></a>jcmd</h3><h2 id="图形化监控界面"><a href="#图形化监控界面" class="headerlink" title="图形化监控界面"></a>图形化监控界面</h2><h3 id="VisualVM"><a href="#VisualVM" class="headerlink" title="VisualVM"></a>VisualVM</h3><h3 id="MAT"><a href="#MAT" class="headerlink" title="MAT"></a>MAT</h3><p>mat主要是用来分析dump文件的。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">42 分钟读完 (大约6327个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-17-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">JVM垃圾回收</a></p><div class="content"><h2 id="为什么要进行GC？"><a href="#为什么要进行GC？" class="headerlink" title="为什么要进行GC？"></a>为什么要进行GC？</h2><ul>
 <li>对于高级语言来说，不断的生产对象，不进行垃圾回收，迟早内存会消耗完。</li>
 <li>GC除了清理无用的对象，也可以对内存碎片进行整理，空闲出连续的内存空间，以便JVM将整理出来的内存分配给新对象。</li>
 <li>随着业务越来越庞大，没有GC就不能保证程序的正常允许，随着GC的增多，STW的时间也会增多，所以才不断的需要对GC进行优化。</li>
@@ -351,47 +357,6 @@
 <p>ZGC几乎在所有地方都并发指向，除了初始化标记是STW的，所以停顿时间就耗费在初始标记上，实际上这部分时间是非常少的。</p>
 <p>ZGC性能对比：</p>
 <p><img src="C:/Users/admin/AppData/Roaming/Typora/typora-user-images/image-20230309175922843.png" alt="image-20230309175922843"></p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">4 分钟读完 (大约663个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-22-JVM%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">JVM性能调优</a></p><div class="content"><h2 id="性能监控"><a href="#性能监控" class="headerlink" title="性能监控"></a>性能监控</h2><p>监控点：</p>
-<ul>
-<li>GC频繁</li>
-<li>CPU Load过高</li>
-<li>OOM</li>
-<li>内存泄漏</li>
-<li>死锁</li>
-<li>程序响应时间较长</li>
-</ul>
-<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>一种侵入式收集运行性能数据的活动，它会影响应用的吞吐量或响应性。</p>
-<p>性能分析是针对性能问题的答复结果，关注的范围通常比性能监控更加集中。</p>
-<p>性能分析很少在生产环境下进行，通常是在质量评估、系统测试或者开发环境下进行，是性能监控之后的步骤。</p>
-<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>一种为改善应用响应或吞吐量而更改参数、源代码、属性配置的活动，性能调优是在性能监控、性能分析之后的活动。</p>
-<p>主要就是改善GC和Full GC出现的次数以及减少内存占用。</p>
-<h2 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h2><ul>
-<li>停顿时间</li>
-<li>吞吐量：<ul>
-<li>单元时间内完成的工作量</li>
-<li>在GC中运行用户代码占总运行时间的比例（总运行时间：程序的运行时间+内存回收时间）吞吐量为1-1&#x2F;（1+n）。-XX：GCTimeRatio&#x3D;n</li>
-</ul>
-</li>
-<li>并发数：同一时刻对服务器有实际交互的请求数</li>
-<li>内存占用：Java堆区所占用的内存大小</li>
-</ul>
-<h2 id="JDK自带的监控工具"><a href="#JDK自带的监控工具" class="headerlink" title="JDK自带的监控工具"></a>JDK自带的监控工具</h2><h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>查看正在运行的Java进程，类似jps命令可以方便查看Java进程的启动类、传入参数和Java虚拟机参数等信息。</p>
-<p>参数说明：</p>
-<ul>
-<li>-q：只输出进程ID</li>
-<li>-m：输出传入main方法的参数</li>
-<li>-l：输出完整的包名，应用主类名，jar的完全路径名</li>
-<li>-v：输出jvm参数</li>
-<li>-V：输出通过flag文件传递到JVM中的参数</li>
-</ul>
-<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>jstat是一款轻量级小工具，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括对Heap size和垃圾回收的监控。</p>
-<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041577984">Jstat命令详解</a></p>
-<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p>jinfo它主要的作用就是实时查看和修改VM参数。</p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8d8aef212b25">jinfo命令详解</a></p>
-<h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>jmap是用多功能的命令。它可以生成Java程序dump文件，也可以查看堆内对象示例的统计信息、查看ClassLoader的信息以及finalizer队列。</p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a4ad53179df3">jmap详解</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sxdcgaq8080/p/11089664.html">https://www.cnblogs.com/sxdcgaq8080/p/11089664.html</a></p>
-<h3 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h3><h3 id="jcmd"><a href="#jcmd" class="headerlink" title="jcmd"></a>jcmd</h3><h2 id="图形化监控界面"><a href="#图形化监控界面" class="headerlink" title="图形化监控界面"></a>图形化监控界面</h2><h3 id="VisualVM"><a href="#VisualVM" class="headerlink" title="VisualVM"></a>VisualVM</h3><h3 id="MAT"><a href="#MAT" class="headerlink" title="MAT"></a>MAT</h3><p>mat主要是用来分析dump文件的。</p>
 </div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-17T14:00:00.000Z" title="2023/1/17 22:00:00">2023-01-17</time>发表</span><span class="level-item"><time dateTime="2023-01-17T14:00:00.000Z" title="2023/1/17 22:00:00">2023-01-17</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">24 分钟读完 (大约3529个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/17/2023-01-17_JVM%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%AD%90%E7%B3%BB%E7%BB%9F/">JVM的类加载子系统</a></p><div class="content"><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><h3 id="类加载器子系统作用"><a href="#类加载器子系统作用" class="headerlink" title="类加载器子系统作用"></a>类加载器子系统作用</h3><p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543193.png" alt="image-20230117164809670"></p>
 <ul>
 <li>类加载器子系统负责从文件系统或者网络中加载Class文件，class文件在文件开头有特定的文件标识。</li>
@@ -539,7 +504,7 @@
 <p>除了以上七种情况，其他使用Java类的方式都被看作是对类的被动使用，都不会导致类的初始化。</p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/w605283073/article/details/103209221">IDEA字节码学习查看神器jclasslib bytecode viewer介绍</a></p>
 <p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/">Oracle JDK8 API官方文档</a></p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>发表</span><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">7 分钟读完 (大约1057个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/16/2023-01-16-JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E8%AF%A6%E8%A7%A3/">JVM的内存区域详解</a></p><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于Java程序员来说，在虚拟机自动内存管理机制下，不需要像C&#x2F;C++程序员为每一个new的操作去写对应的delete&#x2F;free操作，不容易出现内存泄漏和内存溢出问题，正是因为Java程序员把内存控制权交给JVM，一旦出现内存泄漏和内存溢出等问题，如果不熟悉JVM，那么排查将是一个艰巨的任务。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>发表</span><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">21 分钟读完 (大约3131个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/16/2023-01-16-JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E8%AF%A6%E8%A7%A3/">JVM的内存区域详解</a></p><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于Java程序员来说，在虚拟机自动内存管理机制下，不需要像C&#x2F;C++程序员为每一个new的操作去写对应的delete&#x2F;free操作，不容易出现内存泄漏和内存溢出问题，正是因为Java程序员把内存控制权交给JVM，一旦出现内存泄漏和内存溢出等问题，如果不熟悉JVM，那么排查将是一个艰巨的任务。</p>
 <h2 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h2><p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK 1.8之后 和之前的版本略有不同。</p>
 <h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器是一块很小的内存空间，我们可以把它看作当前线程所执行的字节码指令的行号指示器。字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转等功能都需要依赖这个计数器来完成。</p>
 <p>另外，为了线程切换后能恢复到正确的执行位置，每条线程都拥有一个独立的程序计数器，各线程之间互不影响，独立存储，我们称这类内存区域为”线程私有“的内存。</p>
@@ -549,17 +514,108 @@
 <li>在多线程的情况下，程序计数器用于记录当前线程执行的位置，从而当线程被切换回来时，就能知道当前线程执行的位置。</li>
 </ul>
 <p><strong>注意：程序计数器是唯一一个不会出现OutOfMemoryError的内存区域，它的生命周期随着线程的创建而创建，随着线程的结束而死亡。</strong></p>
-<h3 id="JVM虚拟机栈"><a href="#JVM虚拟机栈" class="headerlink" title="JVM虚拟机栈"></a>JVM虚拟机栈</h3><p>与程序计数器一样，Java虚拟机栈也是线程私有的，它的生命周期和线程相同。</p>
-<p>栈是JVM运行时数据区域的一个核心区域，除了Native方法调用是通过本地方法栈实现的，其他所有的方法调用都是通过JVM虚拟机栈进行实现的。</p>
-<p>方法调用的数据通过栈进行传递，每一次方法从调用到调用结束都对应着一个栈帧从入栈到出栈的过程。</p>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>与程序计数器一样，Java虚拟机栈也是线程私有的，它的生命周期和线程相同。</p>
+<p>栈是<code>JVM</code>运行时数据区域的一个核心区域，除了<code>Native</code>方法调用是通过本地方法栈实现的，其他所有的方法调用都是通过<code>JVM</code>虚拟机栈进行实现的。</p>
 <p>栈由一个个栈帧组成，而每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法返回地址。</p>
-<ul>
-<li>局部变量表：主要存放编译期可知的各种数据类型（boolean、byte、char、short、int、float、long、double）、对象引用类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置。</li>
-<li>操作数栈：主要作为方法调用的中转站，用于存放方法执行过程中产生的中间变量。</li>
-<li>动态链接：每一个栈帧内部都包含一个指向运行时常量池中该栈帧中所属方法的引用，包含这个引用的目的就是为了支持当前方法的代码能够实现动态链接。描述一个方法调用了另外的其他方法时，，就是通过常量池中指向方法的符号引用来表示的，<strong>动态链接的作用就是为了将这些符号引用转换位调用方法的直接引用</strong>。</li>
-<li>方法返回地址：方法返回地址即为被调用方法执行结束后与调用方法交接时需要用到的内存结构，记录被调用方法结束后，调用处的下一条指令。</li>
+<ol>
+<li><strong>局部变量表</strong>：<ul>
+<li>局部变量表用于存放方法参数和方法内部定义的局部变量。</li>
+<li>每个局部变量槽可以保存一个数据类型，例如整数、浮点数、引用等。</li>
+<li>它的最大容量在编译时确定。</li>
 </ul>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>发表</span><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">18 分钟读完 (大约2650个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">JVM的体系结构</a></p><div class="content"><p>JVM学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/#more">阅读更多</a></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">51</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">45</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">28</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%85/"><span class="tag">感情</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-16T16:37:00.000Z">2024-03-17</time></p><p class="title"><a href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/">我想成为一个怎样的人？</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-02-02_%E9%B2%9C%E8%8A%B1/">鲜花</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-03-08_%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/">常见的限流算法</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-01-30T08:36:00.000Z">2024-01-30</time></p><p class="title"><a href="/2024/01/30/2024-01-30_Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%88%97%E8%A1%A8(quicklist)/">Redis数据结构——快速列表(quicklist).md</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-18T07:46:00.000Z">2023-09-18</time></p><p class="title"><a href="/2023/09/18/2023-09-18_Kubernetes/">Kubernetes</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+</li>
+<li><strong>操作数栈</strong>：<ul>
+<li>操作数栈是一个后入先出（LIFO）的栈结构。</li>
+<li>主要作为方法调用的中转站，用于存放方法执行过程中产生的中间变量。</li>
+</ul>
+</li>
+<li><strong>动态链接</strong>：<ul>
+<li>每个栈帧内部都包含一个指向运行时常量池中该栈帧所属方法的引用。</li>
+<li>这个引用的目的是为了支持当前方法的代码能够实现动态链接。</li>
+<li>举个例子，当一个方法调用了另外的其他方法时，通过常量池中指向方法的符号引用来表示，动态链接的作用就是将这些符号引用转换为调用方法的直接引用。</li>
+</ul>
+</li>
+<li><strong>方法返回地址</strong>：<ul>
+<li>方法返回地址用于恢复调用当前方法的方法的执行状态。</li>
+<li>当方法正常退出时，返回给方法调用者的返回地址。</li>
+<li>当方法异常退出时，由异常处理器表确定的返回地址。</li>
+</ul>
+</li>
+</ol>
+<p>总之，栈帧是虚拟机运行时数据区中虚拟机栈的栈元素，存储了方法的局部变量表、操作数栈、动态链接和方法返回地址等信息。每个方法从调用到执行完成都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<blockquote>
+<p><strong>动态链接</strong>是一个在编程语言和虚拟机中的概念，让我用更简单的方式来解释一下。</p>
+<ol>
+<li><strong>符号引用</strong>：<ul>
+<li>当我们在代码中调用一个方法时，我们使用的是方法的名称（例如，<code>myMethod()</code>）。</li>
+<li>这个方法名称在编译时被称为<strong>符号引用</strong>。它只是一个标识符，不包含实际的方法地址。</li>
+</ul>
+</li>
+<li><strong>直接引用</strong>：<ul>
+<li>在程序运行时，虚拟机需要将这个符号引用转换为实际的方法地址，以便执行方法。</li>
+<li>这个实际的方法地址被称为<strong>直接引用</strong>。</li>
+<li>这个转换过程就是<strong>动态链接</strong>。</li>
+</ul>
+</li>
+<li><strong>动态链接的作用</strong>：<ul>
+<li>当我们调用一个方法时，虚拟机会在运行时查找该方法的实际地址。</li>
+<li>它会根据符号引用中的信息，找到对应的类、方法名、参数类型等。</li>
+<li>然后，它将符号引用转换为直接引用，以便正确地执行方法。</li>
+</ul>
+</li>
+</ol>
+<p>举个例子，假设我们有一个类 <code>MyClass</code>，其中有一个方法 <code>myMethod()</code>。在代码中，我们写下了 <code>MyClass.myMethod()</code> 来调用这个方法。在编译时，这个调用被表示为符号引用。但是在运行时，虚拟机会查找 <code>MyClass</code> 类，找到 <code>myMethod()</code> 的实际地址，然后执行它。</p>
+<p>总之，动态链接的目的是在运行时将符号引用转换为实际的方法地址，以支持方法调用过程中的动态连接。</p>
+</blockquote>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><p>本地方法栈的作用和虚拟机栈的作用类似，唯一的区别就是虚拟机栈作用于<code>Java</code>方法，而本地方法栈作用于<code>Native</code>方法。它同样也会发生<code>OutOfMemoryError</code>和<code>StackOverFlowError</code>。</p>
+<p>但是注意其实&lt;&lt;JVM虚拟机规范&gt;&gt;对本地方法的实现并没有强制的规定，甚至<code>HotSpot VM</code>直接将本地方法栈和虚拟机栈合二为一。</p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是用于存储对象的一块内存区域，几乎所有的对象和数组都在堆上面进行分配。</p>
+<blockquote>
+<p>有一种特殊情况，即<strong>逃逸分析</strong>技术，它可以影响对象的分配位置。</p>
+<ol>
+<li><strong>逃逸分析</strong>：<ul>
+<li>逃逸分析是一种优化技术，用于确定对象的生命周期是否逃逸出方法。</li>
+<li>如果经过逃逸分析后发现，一个对象并没有逃逸出方法，那么就可能被优化成在<strong>栈上分配</strong>。</li>
+<li>栈上分配意味着对象不在堆上分配内存，而是直接在线程的栈空间上分配。</li>
+</ul>
+</li>
+<li><strong>栈上分配</strong>：<ul>
+<li>当对象不逃逸出方法时，虚拟机可以将其分配到栈上。</li>
+<li>这样无需在堆上分配内存，也无须进行垃圾回收。</li>
+<li>栈上分配通常发生在局部变量、临时对象等情况下。</li>
+</ul>
+</li>
+</ol>
+<p>总之，虽然大部分对象仍在堆中分配，但逃逸分析技术使得一些对象可以在栈上分配，从而提高了性能和资源利用率。</p>
+</blockquote>
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区与堆一样是各个线程共享的内存区域，主要用于存储已被虚拟机加载的类型信息、常量、静态变量、即时编译后的代码缓存等数据。虽然&lt;&lt;JVM虚拟机规范&gt;&gt;中把方法区描述为一个堆的一个逻辑部分，但是它还有一个别名叫做”非堆”，目的就是与堆区分开。</p>
+<p>在 <code>JDK 6</code> 时，<code>HotSpot </code>开发团队就开始考虑放弃永久代，逐步改为使用本地内存来实现方法区。到了<code>JDK 7</code>的 <code>HotSpot</code>，已经将原本放在永久代的字符串常量池、静态变量等移到堆中。而在<code> JDK 8</code> 中，终于完全废弃了永久代的概念，改用元空间来代替。元空间将<code>JDK 7</code>中永久代剩余的内容（主要是类型信息）全部移到本地内存中。</p>
+<p><strong>永久代和元空间</strong>：</p>
+<ul>
+<li>永久代和元空间都是 <code>HotSpot</code> 虚拟机对《Java 虚拟机规范》中方法区的实现。</li>
+<li>在<code>JDK 1.8</code>之前，<code>HotSpot </code>使用永久代来实现方法区，但这样会导致 <code>JVM </code>调优比较困难，且容易发生 <code>OutOfMemoryError（OOM）</code>的问题。(不好估算方法区所需要的大小)</li>
+<li><code>JDK 1.8</code> 及之后，使用的是元空间存放在本地内存中的方式来替代永久代，降低了<code> OOM</code> 发生的可能性。</li>
+</ul>
+<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>当<code>Class</code>文件编译后，<code>Class</code>文件中将会存在常量池，这部分内容将会在类加载完成时转化为运行时常量池。</p>
+<p>在<code>JDK 7</code>中将原本在永久代的运行时常量池移到堆中。</p>
+<ul>
+<li>运行时常量池是 <code>JVM </code>中的一块内存区域，用于存储类文件中的常量数据以及符号引用。</li>
+<li>在编译阶段，Java 类文件中的常量将会被分析和存储到运行时常量池中。</li>
+<li>运行时常量池可以看作是一张表，在程序运行时通过常量的索引值直接或间接地引用这些常量。</li>
+</ul>
+<p>运行时常量池相对于类文件常量池的另一个重要特征是具备<strong>动态性</strong>。Java 语言并不要求常量一定只有在编译期才能产生。也就是说，并非预置在类文件中常量池的内容才能进入方法区的运行时常量池。在运行期间，我们也可以将新的常量放入池中。这种特性被开发人员广泛利用，其中一个常见的例子就是 <code>String</code> 类的 <code>intern()</code> 方法。</p>
+<ul>
+<li>String 类的 intern() 方法<ul>
+<li><code>intern()</code> 方法用于将字符串添加到运行时常量池中。</li>
+<li>如果字符串常量池中已经存在相同内容的字符串，<code>intern()</code> 方法会返回对已有字符串的引用。</li>
+<li>如果字符串常量池中不存在相同内容的字符串，<code>intern()</code> 方法会将该字符串添加到常量池并返回对它的引用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h3><p>直接内存（Direct Memory）并不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。但是这部分内存也被频繁地使用，而且也可能导致 <strong>OutOfMemoryError</strong> 异常出现，所以我们放到这里一起讲解。</p>
+<p>在 JDK 1.4 中新加入了 NIO（New Input&#x2F;Output）类，引入了一种基于通道（Channel）与缓冲区（Buffer）的 I&#x2F;O 方式，它可以使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆里面的 <code>DirectByteBuffer</code> 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆中来回复制数据。</p>
+<p>显然，本机直接内存的分配不会受到 Java 堆大小的限制，但是，既然是内存，则肯定还是会受到本机总内存（包括物理内存、SWAP 分区或者分页文件）大小以及处理器寻址空间的限制。一般服务器管理员配置虚拟机参数时，会根据实际内存去设置 <code>-Xmx</code> 等参数信息，但经常忽略掉直接内存，使得各个内存区域总和大于物理内存限制（包括物理的和操作系统级的限制），从而导致动态扩展时出现 <strong>OutOfMemoryError</strong> 异常。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>发表</span><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">18 分钟读完 (大约2650个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">JVM的体系结构</a></p><div class="content"><p>JVM学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-01-29T14:00:00.000Z" title="2022/1/29 22:00:00">2022-01-29</time>发表</span><span class="level-item"><time dateTime="2022-01-29T14:00:00.000Z" title="2022/1/29 22:00:00">2022-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">31 分钟读完 (大约4677个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2022/01/29/2022-02-02_JVM%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E8%AF%A6%E8%A7%A3/">JVM垃圾收集器详解</a></p><div class="content"><p>JVM垃圾收集器笔记</p></div><a class="article-more button is-small is-size-7" href="/2022/01/29/2022-02-02_JVM%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E8%AF%A6%E8%A7%A3/#more">阅读更多</a></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous is-invisible is-hidden-mobile"><a href="/tags/JVM/page/0/">上一页</a></div><div class="pagination-next"><a href="/tags/JVM/page/2/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link is-current" href="/tags/JVM/">1</a></li><li><a class="pagination-link" href="/tags/JVM/page/2/">2</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">53</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">47</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">11</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">30</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%85/"><span class="tag">感情</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-16T16:37:00.000Z">2024-03-17</time></p><p class="title"><a href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/">我想成为一个怎样的人？</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-02-02_%E9%B2%9C%E8%8A%B1/">鲜花</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-03-08_%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/">常见的限流算法</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-01-30T08:36:00.000Z">2024-01-30</time></p><p class="title"><a href="/2024/01/30/2024-01-30_Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%88%97%E8%A1%A8(quicklist)/">Redis数据结构——快速列表(quicklist).md</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-18T07:46:00.000Z">2023-09-18</time></p><p class="title"><a href="/2023/09/18/2023-09-18_Kubernetes/">Kubernetes</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,

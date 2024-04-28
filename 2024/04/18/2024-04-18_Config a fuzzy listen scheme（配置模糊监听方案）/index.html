@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Config a fuzzy listen scheme（配置模糊监听方案） - skYxg</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#3273dc"><meta name="application-name" content="skYxg"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#3273dc"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="skYxg"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Config a fuzzy listen scheme（配置模糊监听方案）"><meta property="og:type" content="blog"><meta property="og:title" content="Config a fuzzy listen scheme（配置模糊监听方案）"><meta property="og:url" content="http://skyxg.cn/2024/04/18/2024-04-18_Config%20a%20fuzzy%20listen%20scheme%EF%BC%88%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%B3%8A%E7%9B%91%E5%90%AC%E6%96%B9%E6%A1%88%EF%BC%89/"><meta property="og:site_name" content="skYxg"><meta property="og:description" content="Config a fuzzy listen scheme（配置模糊监听方案）"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070058858.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201458577.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403211005733.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059002.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404061959861.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059428.png"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070036542.png"><meta property="article:published_time" content="2024-04-18T14:37:42.000Z"><meta property="article:modified_time" content="2024-03-17T14:37:42.000Z"><meta property="article:author" content="阿魁"><meta property="article:tag" content="Nacos"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070058858.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://skyxg.cn/2024/04/18/2024-04-18_Config%20a%20fuzzy%20listen%20scheme%EF%BC%88%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%B3%8A%E7%9B%91%E5%90%AC%E6%96%B9%E6%A1%88%EF%BC%89/"},"headline":"Config a fuzzy listen scheme（配置模糊监听方案）","image":["https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070058858.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201458577.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403211005733.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059002.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404061959861.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059428.png","https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070036542.png"],"datePublished":"2024-04-18T14:37:42.000Z","dateModified":"2024-03-17T14:37:42.000Z","author":{"@type":"Person","name":"阿魁"},"publisher":{"@type":"Organization","name":"skYxg","logo":{"@type":"ImageObject","url":{"text":"skYxg"}}},"description":"Config a fuzzy listen scheme（配置模糊监听方案）"}</script><link rel="canonical" href="http://skyxg.cn/2024/04/18/2024-04-18_Config%20a%20fuzzy%20listen%20scheme%EF%BC%88%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%B3%8A%E7%9B%91%E5%90%AC%E6%96%B9%E6%A1%88%EF%BC%89/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">skYxg</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-04-18T14:37:42.000Z" title="2024/4/18 22:37:42">2024-04-18</time>发表</span><span class="level-item"><time dateTime="2024-03-17T14:37:42.000Z" title="2024/3/17 22:37:42">2024-03-17</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></span><span class="level-item">17 分钟读完 (大约2621个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Config a fuzzy listen scheme（配置模糊监听方案）</h1><div class="content"><p>Config a fuzzy listen scheme（配置模糊监听方案）</p>
+<span id="more"></span>
+
+<h2 id="1-背景与需求"><a href="#1-背景与需求" class="headerlink" title="1. 背景与需求"></a>1. 背景与需求</h2><p>在用户的应用场景中，存在对配置批次监听的需求，例如需要监听同一个 group 下的部分或所有的配置变化。目前，用户只能通过精确监听单个配置。</p>
+<p>为了解决这一问题，引入了模糊监听的概念，允许用户监听符合<code>Pattern</code>的配置变化（新增、删除、不包含更新）。通过模糊监听，用户可以获取到符合指定<code>Pattern</code>的配置元数据，再结合精确监听，可以更加灵活地实现配置变化的监听与处理。</p>
+<p>因此，用户可以通过以下方式实现对指定 group 下配置的监听：</p>
+<p>使用模糊监听，监听符合指定<code>Pattern</code>的配置变化（新增、删除、不包含更新），例如匹配某个 group 下所有配置的模式。<br>结合精确监听，对特定的配置进行精确监听（新增、删除、更新），以获取对单个配置变化的实时通知。<br>从而实现整个配置的模糊监听。</p>
+<h2 id="2-实现方案"><a href="#2-实现方案" class="headerlink" title="2. 实现方案"></a>2. 实现方案</h2><h3 id="2-1-整体流程图"><a href="#2-1-整体流程图" class="headerlink" title="2.1. 整体流程图"></a>2.1. 整体流程图</h3><p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070058858.png" alt="image-20240407005832587"></p>
+<h3 id="2-2-Pattern存储规则"><a href="#2-2-Pattern存储规则" class="headerlink" title="2.2. Pattern存储规则"></a>2.2. Pattern存储规则</h3><p>使用<code>Pattern</code>实现在特定命名空间和组中对一组具有特定前缀的配置进行监听，这使得配置中心能够更灵活地处理不同场景下的配置需求。</p>
+<p><code>Pattern</code>存储规则图：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201458577.png" alt="image-20240320145805129"></p>
+<p>由于客户端的<code>ConfigServer</code>与<code>namespace</code>绑定，而服务端可能接收到不同<code>namespace</code>客户端的模糊订阅请求，所以服务端存储需要带上<code>namespace</code>，而客户端对<code>namespace</code>不进行存储。</p>
+<p>上图中的通配符，匹配规则如下：</p>
+<ul>
+<li>订阅<code>namespace= public</code>，<code>group = group</code>下<code>dataId</code>前缀为<code>test</code>的所有配置</li>
+</ul>
+<h3 id="2-3-客户端模糊监听上下文实体说明"><a href="#2-3-客户端模糊监听上下文实体说明" class="headerlink" title="2.3. 客户端模糊监听上下文实体说明"></a>2.3. 客户端模糊监听上下文实体说明</h3><p><code>FuzzyListenContext</code>：模糊监听上下文实体（后续该实体均用“上下文”描述。），与模糊监听配置表达式一对一关联关系，并且包含了以下属性：</p>
+<ul>
+<li><code>envName</code>：环境名称，表示监听配置所在的环境。</li>
+<li><code>taskId</code>：任务编号，主要用于分片处理，将模糊监听上下文分配给不同的任务。</li>
+<li><code>dataIdPattern</code>：模糊监听表达式。</li>
+<li><code>group</code>：配置的分组信息。</li>
+<li><code>tenant</code>：租户信息，用于区分不同租户的配置。</li>
+<li><code>isConsistentWithServer</code>：是否与服务端同步，表示此模糊监听表达式是否已同步到服务端。</li>
+<li><code>isInitializing</code>：是否正在初始化模糊监听上下文列表。</li>
+<li><code>isDiscard</code>：是否丢弃，当<code>listeners</code>为空时，<code>isDiscard = true</code>，表示此模糊监听上下文可以丢弃，即通知服务端取消对该上下文的监听。</li>
+<li><code>dataIds</code>：此上下文所匹配的配置数据ID列表。</li>
+<li><code>listeners</code>：监听器列表，用于存储与此上下文关联的监听器。</li>
+</ul>
+<p>该实体描述了客户端中上下文的各种属性和状态，以及与之关联的配置数据ID列表和监听器列表。</p>
+<h3 id="2-4-客户端初始化模糊监听上下文"><a href="#2-4-客户端初始化模糊监听上下文" class="headerlink" title="2.4. 客户端初始化模糊监听上下文"></a>2.4. 客户端初始化模糊监听上下文</h3><p><code>SDK</code>端需要存储当前<code>ClientWorker</code>中所有的<code>Context</code>，并且提供<code>&lt;KepPattern, Context&gt;</code>的Map映射关系，主要是方便索引，所以<code>ClientWorker</code>中新增<code>AtomicReference&lt;Map&lt;String, FuzzyListenContext&gt;&gt; fuzzyListenContextMap</code>。</p>
+<p>客户端初始化模糊监听上下文流程图：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403211005733.png" alt="image-20240321100535299"></p>
+<p>当新增<code>FuzzyListrener</code>时，将会通过<code>Pattern</code>判断是否存在上下文，其实就是判断是否重复监听，如果是监听，则直接获取到<code>Context</code>中的配置回调<code>Listener</code>即可。</p>
+<p><strong>注意：当重复监听时，这里直接回调<code>Listener</code>，但是不能回调所有的<code>Listener</code>，所以<code>Listener</code>需要<code>UUID</code>标识</strong></p>
+<h3 id="2-5-客户端执行模糊监听上下文"><a href="#2-5-客户端执行模糊监听上下文" class="headerlink" title="2.5. 客户端执行模糊监听上下文"></a>2.5. 客户端执行模糊监听上下文</h3><p>在 <code>ClientWorker</code> 中新增了 <code>fuzzyListenContextMap</code>，该 Map 包含了所有的上下文。</p>
+<p>执行配置模糊监听的流程图：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059002.png" alt="image-20240407005927114"></p>
+<p>说明：</p>
+<ol>
+<li>客户端定时（每5秒）执行配置模糊监听，或者新增上下文。</li>
+<li>根据所有的上下文，判断是否需要进行同步，具体判断逻辑包括模糊监听上下文的同步标识以及是否达到全量同步的条件。</li>
+<li>根据丢弃标识判断出上下文是需要创建模糊监听还是取消模糊监听，分别构造批次模糊监听请求。</li>
+<li>发起批次模糊监听请求。</li>
+</ol>
+<h4 id="2-5-1-批次模糊监听请求字段"><a href="#2-5-1-批次模糊监听请求字段" class="headerlink" title="2.5.1. 批次模糊监听请求字段"></a>2.5.1. 批次模糊监听请求字段</h4><ul>
+<li><code>ConfigBatchFuzzyListenRequest</code>：配置批次模糊监听请求对象，包含以下字段：<ul>
+<li>contexts：上下文集合，每个上下文包含以下字段：<ul>
+<li><code>tenant</code>：租户信息，用于区分不同租户的配置。</li>
+<li><code>group</code>：配置的分组信息。</li>
+<li><code>dataIdPattern</code>：数据ID模式，用于匹配配置的数据ID。</li>
+<li><code>dataIds</code>：客户端已有的配置数据ID集合，用于与服务端已有的配置进行匹配。</li>
+<li><code>listen</code>：指示是创建监听还是取消监听。</li>
+<li><code>isInitializing</code>：是否初始化中，用于区分上下文是否第一次执行模糊监听。该字段在通知客户端时，分别对应 <code>LISTEN_INIT</code> 和 <code>ADD_CONFIG</code> 事件，目前并没有实际区别，但为了方便扩展，在后续可能需要对第一次执行模糊监听进行特殊处理时，可以通过该字段来实现。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-5-2-模糊监听上下文发送分批"><a href="#2-5-2-模糊监听上下文发送分批" class="headerlink" title="2.5.2. 模糊监听上下文发送分批"></a>2.5.2. 模糊监听上下文发送分批</h4><p>模糊监听上下文分批，主要沿用精确监听的分批实现，实现如下：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404061959861.png" alt="image-20240406195643431"></p>
+<p>通过<code>PER_TASK_CONTEXT_SIZE_KEY</code>配置指定每个<code>Task</code>所能容纳的上下文大小，上下文中存在<code>taskId</code>字段，每初始化上下文时，计算该配置属于哪个<code>Task</code>。</p>
+<p>针对属于同一个<code>Task</code>的模糊监听上下文，将其进行分批合并。合并后的批次包含指定数量的上下文，根据需要将批次发送给服务端。</p>
+<h3 id="2-6-服务端处理批次模糊监听上下文"><a href="#2-6-服务端处理批次模糊监听上下文" class="headerlink" title="2.6. 服务端处理批次模糊监听上下文"></a>2.6. 服务端处理批次模糊监听上下文</h3><p>服务端处理批次模糊监听流程图：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070059428.png" alt="image-20240407005945133"></p>
+<p>说明：</p>
+<p>服务端处理 <code>ConfigBatchFuzzyListenRequest</code> 的流程分为两步，通过事件 <code>ConfigBatchFuzzyListenEvent</code> 进行解耦：</p>
+<ol>
+<li>维护 <code>ConfigChangeListenContext#keyPatternContext</code>：服务端维护 <code>ConfigChangeListenContext</code> 中的 <code>keyPatternContext</code>，用于存储模糊监听表达式和其对应的<code>Connection</code>的映射关系。</li>
+<li>计算变更的配置并推送至客户端：根据客户端已有的配置和服务端Cache的配置，计算出变更的配置，并将变更的配置推送至客户端。</li>
+</ol>
+<h4 id="2-6-1-模糊监听通知请求字段"><a href="#2-6-1-模糊监听通知请求字段" class="headerlink" title="2.6.1. 模糊监听通知请求字段"></a>2.6.1. 模糊监听通知请求字段</h4><ul>
+<li><code>FuzzyListenNotifyDiffRequest</code>：用于通知配置差异的模糊监听请求对象，包含以下字段：<ul>
+<li><code>groupKeyPattern</code>：用于匹配配置组键的模式字符串。</li>
+<li>contexts：包含配置信息的上下文集合，每个上下文包含以下字段：<ul>
+<li><code>tenant</code>：与配置关联的租户。</li>
+<li><code>group</code>：与配置关联的组。</li>
+<li><code>dataId</code>：配置的数据ID。</li>
+<li><code>type</code>：配置变更事件的类型。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-6-2-分批通知"><a href="#2-6-2-分批通知" class="headerlink" title="2.6.2. 分批通知"></a>2.6.2. 分批通知</h4><p>为了有效处理同一模糊监听下的大量配置，我们采用了分批通知的策略。具体流程如下：</p>
+<ol>
+<li>批次大小配置： 我们通过配置项 <code>nacos.config.push.batchSize</code> 来指定每个批次的大小。这个配置决定了每次通知中处理的配置数量。</li>
+<li>分批处理： 当需要发送通知时，我们将大量配置按照指定的批次大小进行划分。每个批次中包含的配置数量不会超过配置的批次大小。</li>
+<li>发送通知： 对于每个批次的配置通知，我们将它们分别发送给客户端。在完成每个批次的通知后，会发送一个特殊的完成请求，通知客户端该批次的处理已经完成。</li>
+</ol>
+<h3 id="2-7-服务端关于配置变更的推送"><a href="#2-7-服务端关于配置变更的推送" class="headerlink" title="2.7. 服务端关于配置变更的推送"></a>2.7. 服务端关于配置变更的推送</h3><p>服务端关于配置变更的推送流程图：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202404070036542.png" alt="image-20240407003623688"></p>
+<p>说明：当服务端发生配置变更时，即发布了 <code>LocalDataChangeEvent</code> 事件。处理过程如下：</p>
+<ol>
+<li>根据变更的配置的唯一标识 <code>GroupKey</code>，与服务端的缓存进行匹配，确定该配置是否存在于服务端的缓存中。</li>
+<li>如果配置存在于缓存中，则通知客户端进行相应的处理。</li>
+</ol>
+<h4 id="2-7-1-模糊监听变更通知字段说明"><a href="#2-7-1-模糊监听变更通知字段说明" class="headerlink" title="2.7.1. 模糊监听变更通知字段说明"></a>2.7.1. 模糊监听变更通知字段说明</h4><ul>
+<li><code>FuzzyListenNotifyChangeRequest</code>：用于通知模糊监听配置变更的请求对象，包含以下字段：<ul>
+<li><code>tenant</code>：配置变更的租户信息。</li>
+<li><code>group</code>：配置变更的组信息。</li>
+<li><code>dataId</code>：配置变更的数据ID。</li>
+<li><code>isExist</code>：指示配置是否存在的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-8-客户端接收配置变更与差异通知"><a href="#2-8-客户端接收配置变更与差异通知" class="headerlink" title="2.8 客户端接收配置变更与差异通知"></a>2.8 客户端接收配置变更与差异通知</h3><p>当服务端发生配置变更时，或者有配置差异需要通知客户端时，客户端接收通知并处理的流程如下：</p>
+<ol>
+<li>服务端向客户端发送相应的请求（<code>FuzzyListenNotifyChangeRequest</code> 或 <code>FuzzyListenNotifyDiffRequest</code>）。</li>
+<li>客户端根据接收到的请求以及当前已存在的配置信息，计算出需要添加或删除的配置，并相应地发布事件（如 <code>FuzzyListenNotifyEvent</code>）。</li>
+<li><code>FuzzyListenNotifyEvent</code>的订阅者接收事件去回调<code>Listener</code>。</li>
+</ol>
+<h2 id="3-0-问题"><a href="#3-0-问题" class="headerlink" title="3.0 问题"></a>3.0 问题</h2><h3 id="3-0-1-模糊监听是否需要监听配置内容的变更？"><a href="#3-0-1-模糊监听是否需要监听配置内容的变更？" class="headerlink" title="3.0.1 模糊监听是否需要监听配置内容的变更？"></a>3.0.1 模糊监听是否需要监听配置内容的变更？</h3><p>@hujun-w-2 提出以这种方案实现，真正的监听逻辑还是依赖精确监听实现的，在监听配置过多时，客户端启动、长连接断开时，会对服务端造成较大消耗，模糊监听应该支持配置内容变更的监听。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Config a fuzzy listen scheme（配置模糊监听方案）</p><p><a href="http://skyxg.cn/2024/04/18/2024-04-18_Config a fuzzy listen scheme（配置模糊监听方案）/">http://skyxg.cn/2024/04/18/2024-04-18_Config a fuzzy listen scheme（配置模糊监听方案）/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>阿魁</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-04-18</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-03-17</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Nacos/">Nacos</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/04/26/2024-04-26_Mysql%E7%9A%84Select%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">理解MySQL的Select语句的执行顺序</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/"><span class="level-item">我想成为一个怎样的人？</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="SOHUCS" sid="2024/04/18/2024-04-18_Config a fuzzy listen scheme（配置模糊监听方案）/"></div><script charset="utf-8" src="https://changyan.sohu.com/upload/changyan.js"></script><script>window.changyan.api.config({appid: 'cywVwIcUu',conf: 'prod_14b21b845e15c8a5909669b20d91763c'});</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">62</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">30</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">55</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI&amp;CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Gitlab/"><span class="tag">Gitlab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">32</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%9F%BA%E7%A1%80/"><span class="tag">Java基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%85/"><span class="tag">感情</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-26T13:49:44.000Z">2024-04-26</time></p><p class="title"><a href="/2024/04/26/2024-04-26_Mysql%E7%9A%84Select%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">理解MySQL的Select语句的执行顺序</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-18T14:37:42.000Z">2024-04-18</time></p><p class="title"><a href="/2024/04/18/2024-04-18_Config%20a%20fuzzy%20listen%20scheme%EF%BC%88%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%B3%8A%E7%9B%91%E5%90%AC%E6%96%B9%E6%A1%88%EF%BC%89/">Config a fuzzy listen scheme（配置模糊监听方案）</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-16T16:37:00.000Z">2024-03-17</time></p><p class="title"><a href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/">我想成为一个怎样的人？</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-03-08_%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/">常见的限流算法</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-02-02_%E9%B2%9C%E8%8A%B1/">鲜花</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

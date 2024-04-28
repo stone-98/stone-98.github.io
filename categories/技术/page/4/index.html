@@ -29,118 +29,560 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">skYxg</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li class="is-active"><a href="#" aria-current="page">技术</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>发表</span><span class="level-item"><time dateTime="2023-01-16T14:00:00.000Z" title="2023/1/16 22:00:00">2023-01-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">21 分钟读完 (大约3131个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/16/2023-01-16-JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E8%AF%A6%E8%A7%A3/">JVM的内存区域详解</a></p><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于Java程序员来说，在虚拟机自动内存管理机制下，不需要像C&#x2F;C++程序员为每一个new的操作去写对应的delete&#x2F;free操作，不容易出现内存泄漏和内存溢出问题，正是因为Java程序员把内存控制权交给JVM，一旦出现内存泄漏和内存溢出等问题，如果不熟悉JVM，那么排查将是一个艰巨的任务。</p>
-<h2 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h2><p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK 1.8之后 和之前的版本略有不同。</p>
-<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器是一块很小的内存空间，我们可以把它看作当前线程所执行的字节码指令的行号指示器。字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转等功能都需要依赖这个计数器来完成。</p>
-<p>另外，为了线程切换后能恢复到正确的执行位置，每条线程都拥有一个独立的程序计数器，各线程之间互不影响，独立存储，我们称这类内存区域为”线程私有“的内存。</p>
-<p>从上述文字中，我们可以得知：</p>
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">skYxg</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li class="is-active"><a href="#" aria-current="page">技术</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-02-23T08:00:00.000Z" title="2023/2/23 16:00:00">2023-02-23</time>发表</span><span class="level-item"><time dateTime="2023-02-23T08:00:00.000Z" title="2023/2/23 16:00:00">2023-02-23</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">几秒读完 (大约72个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/02/23/2022-06-01_%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%B3%BB%E5%88%97/">并发编程系列</a></p><div class="content"><p>开个并发编程系列的坑~</p>
+<p><a target="_blank" rel="noopener" href="https://www.skbk.top/2023/02/28/2023-02-28-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">并发编程之基础知识</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.skbk.top/2023/02/24/2023-02-24-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8BThreadLocal/">并发编程之ThreadLocal</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.skyxg.cn/2023/06/21/2023-06-21_%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%B3%BB%E5%88%97%E4%B9%8B%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/">并发编程之阻塞队列</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>发表</span><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">19 分钟读完 (大约2863个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/30/2023-01-30-Redis%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">Redis知识点总结</a></p><div class="content"><h2 id="Redis的网络模型"><a href="#Redis的网络模型" class="headerlink" title="Redis的网络模型"></a>Redis的网络模型</h2><p>这个问题需要考虑是从哪些维度来看，如果从全局来看Redis肯定是多线程的，早在Redis 4.0就引入了多线程去处理异步任务，例如删除大Key、flushall等命令。我们说Redis的单线程一般说的是Redis的网络模型，在Redis 6.0之前，Redis的网络模型都是一个标准的单线程Reactor模型的，在6.0版本Redis引入多线程网络模型。</p>
+<p>在Redis6.0版本Redis的线程模型改为Muti-Reactor&#x2F;Master-Workers模型，但是Redis的多线程网络模型并不是一个标准的Muti-Reactor&#x2F;Master-Worker模型，最大的不同就是在标准的Multi-Reactor&#x2F;Master-Workers模式下，Sub Reactors&#x2F;Workers会完成<code>网络读-&gt;数据解析-&gt;命令执行-&gt;网络写</code>的整套流程。Main Reactor&#x2F;Master只负责分派任务，而在Redis的多线程方案中，I&#x2F;O线程任务仅仅是通过Socket读取客户端请求命令并解析，没有真正的去执命令，所有客户端命令最后还是要回到主线程中去执行，因此对多核的利用率并不算高，而且每次主线程都必须在分配完任务之后等待所有I&#x2F;O线程完成任务之后才能继续执行其他逻辑。</p>
+<p>Redis之所以需要如此设计它的多线程处理，主要是为了保持它的兼容性，因为以前Redis都是单线程的，所有的操作都是非线程安全的，现在引入多线程，如果按照标准的Multi-Reactor&#x2F;Master-Workers模型进行实现，则所有的操作都必须重构成线程安全的，这个工作量无疑是巨大的。</p>
+<p>所以，Redis目前的多线程方案更像是一个折中的选择，既保持了原系统的兼容性，又能一定程度上利用多核提升I&#x2F;O性能。</p>
+<h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>TODO</p>
+<h3 id="Redis原子性"><a href="#Redis原子性" class="headerlink" title="Redis原子性"></a>Redis原子性</h3><p>Redis的事务和我们平常理解的关系型数据库的事务不同。我们知道数据库事务具有四大特性：</p>
 <ul>
-<li>字节码解释器通过改变程序计数器来依次读取指令，从而实现代码的流程控制。</li>
-<li>在多线程的情况下，程序计数器用于记录当前线程执行的位置，从而当线程被切换回来时，就能知道当前线程执行的位置。</li>
-</ul>
-<p><strong>注意：程序计数器是唯一一个不会出现OutOfMemoryError的内存区域，它的生命周期随着线程的创建而创建，随着线程的结束而死亡。</strong></p>
-<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>与程序计数器一样，Java虚拟机栈也是线程私有的，它的生命周期和线程相同。</p>
-<p>栈是<code>JVM</code>运行时数据区域的一个核心区域，除了<code>Native</code>方法调用是通过本地方法栈实现的，其他所有的方法调用都是通过<code>JVM</code>虚拟机栈进行实现的。</p>
-<p>栈由一个个栈帧组成，而每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法返回地址。</p>
-<ol>
-<li><strong>局部变量表</strong>：<ul>
-<li>局部变量表用于存放方法参数和方法内部定义的局部变量。</li>
-<li>每个局部变量槽可以保存一个数据类型，例如整数、浮点数、引用等。</li>
-<li>它的最大容量在编译时确定。</li>
+<li>原子性<ul>
+<li>事务是最小的执行单位，不允许分割，要么全部执行成功，要么全部执行失败。</li>
 </ul>
 </li>
-<li><strong>操作数栈</strong>：<ul>
-<li>操作数栈是一个后入先出（LIFO）的栈结构。</li>
-<li>主要作为方法调用的中转站，用于存放方法执行过程中产生的中间变量。</li>
+<li>隔离性<ul>
+<li>事务直接是相互隔离的，多个事务并发执行并不互相干扰。</li>
 </ul>
 </li>
-<li><strong>动态链接</strong>：<ul>
-<li>每个栈帧内部都包含一个指向运行时常量池中该栈帧所属方法的引用。</li>
-<li>这个引用的目的是为了支持当前方法的代码能够实现动态链接。</li>
-<li>举个例子，当一个方法调用了另外的其他方法时，通过常量池中指向方法的符号引用来表示，动态链接的作用就是将这些符号引用转换为调用方法的直接引用。</li>
+<li>持久性<ul>
+<li>事务对数据库的操作是持久的。</li>
 </ul>
 </li>
-<li><strong>方法返回地址</strong>：<ul>
-<li>方法返回地址用于恢复调用当前方法的方法的执行状态。</li>
-<li>当方法正常退出时，返回给方法调用者的返回地址。</li>
-<li>当方法异常退出时，由异常处理器表确定的返回地址。</li>
+<li>一致性<ul>
+<li>执行事务前后，数据保持一致性。</li>
 </ul>
 </li>
-</ol>
-<p>总之，栈帧是虚拟机运行时数据区中虚拟机栈的栈元素，存储了方法的局部变量表、操作数栈、动态链接和方法返回地址等信息。每个方法从调用到执行完成都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
-<blockquote>
-<p><strong>动态链接</strong>是一个在编程语言和虚拟机中的概念，让我用更简单的方式来解释一下。</p>
-<ol>
-<li><strong>符号引用</strong>：<ul>
-<li>当我们在代码中调用一个方法时，我们使用的是方法的名称（例如，<code>myMethod()</code>）。</li>
-<li>这个方法名称在编译时被称为<strong>符号引用</strong>。它只是一个标识符，不包含实际的方法地址。</li>
 </ul>
-</li>
-<li><strong>直接引用</strong>：<ul>
-<li>在程序运行时，虚拟机需要将这个符号引用转换为实际的方法地址，以便执行方法。</li>
-<li>这个实际的方法地址被称为<strong>直接引用</strong>。</li>
-<li>这个转换过程就是<strong>动态链接</strong>。</li>
+<p>我们可以把Redis中的事务简单理解成：Redis事务提供了一种将多个命令请求打包的功能，然后再按照打包的顺序执行所有命令，并且中途不会被打断。</p>
+<h3 id="Redis如何判断数据是否过期"><a href="#Redis如何判断数据是否过期" class="headerlink" title="Redis如何判断数据是否过期"></a>Redis如何判断数据是否过期</h3><p>Redis通过一个过期字典（例如hash表）来保存数据过期的时间，过期字典的键指向Redis数据库中的某个Key值，过期字典的值是一个long long的整数，这个整数保存了key所指向的数据库键的过期时间。（毫秒精度的unix时间戳）。</p>
+<h3 id="过期数据的删除策略"><a href="#过期数据的删除策略" class="headerlink" title="过期数据的删除策略"></a>过期数据的删除策略</h3><h4 id="惰性删除"><a href="#惰性删除" class="headerlink" title="惰性删除"></a>惰性删除</h4><p>取出key的时候才对数据进行过期检查，这样对cpu十分友好，但是会导致太多过期key没有被删除。</p>
+<h4 id="定期删除"><a href="#定期删除" class="headerlink" title="定期删除"></a>定期删除</h4><p>每隔一段时间去除一批key执行删除过期key操作，并且Redis底层会通过限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响。</p>
+<p>定期删除对内存更加友好，惰性删除对CPU更加友好，两者各有千秋，所以Redis采用的是定期删除+惰性删除。</p>
+<p>但是仅仅通过给key设置过期时间还是有问题的。因为还是可能存在定期删除和惰性删除漏掉很多过期key，这样会导致大量的key堆积再内存中，导致Out of memory。</p>
+<p>Redis通过内存淘汰机制处理该问题。</p>
+<h3 id="内存淘汰策略"><a href="#内存淘汰策略" class="headerlink" title="内存淘汰策略"></a>内存淘汰策略</h3><p>TODO</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><h4 id="RDB（Redis-DataBase）"><a href="#RDB（Redis-DataBase）" class="headerlink" title="RDB（Redis DataBase）"></a>RDB（Redis DataBase）</h4><p>Redis将fork一个子进程来进行持久化，在指定时间间隔内将内存中的数据写入磁盘（即快照），恢复时将快照文件直接读到内存中。</p>
+<h5 id="fork介绍"><a href="#fork介绍" class="headerlink" title="fork介绍"></a>fork介绍</h5><p>fork一个与当前进程一样的子进程。</p>
+<h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><h6 id="RDB文件配置"><a href="#RDB文件配置" class="headerlink" title="RDB文件配置"></a>RDB文件配置</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### rdb文件配置</span><br><span class="line">dbfilename dump.rdb</span><br></pre></td></tr></table></figure>
+<h6 id="RDB文件保存位置"><a href="#RDB文件保存位置" class="headerlink" title="RDB文件保存位置"></a>RDB文件保存位置</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### rdb 文件的保存路径可以修改。默认为 Redis 启动时命令行所在的目录下。</span><br><span class="line">dir ./</span><br></pre></td></tr></table></figure>
+<h6 id="当-redis-无法写入磁盘，关闭-redis-的写入操作"><a href="#当-redis-无法写入磁盘，关闭-redis-的写入操作" class="headerlink" title="当 redis 无法写入磁盘，关闭 redis 的写入操作"></a>当 redis 无法写入磁盘，关闭 redis 的写入操作</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 当 redis 无法写入磁盘，关闭 redis 的写入操作。</span><br><span class="line">stop-writes-on-bgsave-error yes</span><br></pre></td></tr></table></figure>
+<h6 id="开启持久化文件压缩存储"><a href="#开启持久化文件压缩存储" class="headerlink" title="开启持久化文件压缩存储"></a>开启持久化文件压缩存储</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 持久化的文件是否进行压缩存储</span><br><span class="line">rdbcompression yes</span><br></pre></td></tr></table></figure>
+<h6 id="RDB文件完整性检查"><a href="#RDB文件完整性检查" class="headerlink" title="RDB文件完整性检查"></a>RDB文件完整性检查</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 开启RDB文件完整性检查</span><br><span class="line">rbdchecksum yes</span><br></pre></td></tr></table></figure>
+<h6 id="RDB文件写入策略"><a href="#RDB文件写入策略" class="headerlink" title="RDB文件写入策略"></a>RDB文件写入策略</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 每秒写的次数 格式：save 秒 写操作次数</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>适合大规模的数据恢复</li>
+<li>对数据完整性和一致性要求不高</li>
+<li>节省磁盘空间</li>
+<li>恢复速度快</li>
 </ul>
-</li>
-<li><strong>动态链接的作用</strong>：<ul>
-<li>当我们调用一个方法时，虚拟机会在运行时查找该方法的实际地址。</li>
-<li>它会根据符号引用中的信息，找到对应的类、方法名、参数类型等。</li>
-<li>然后，它将符号引用转换为直接引用，以便正确地执行方法。</li>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><ul>
+<li>fork的时候，内存中的数据被clone了一份，数据膨胀2倍</li>
+<li>虽然fork使用了写时拷贝技术，但是如果数据庞大时还是十分消耗性能</li>
+<li>以一定时间周期进行备份，如果Redis意外down掉，则会丢失最后一次备份之后所有的数据</li>
 </ul>
+<h4 id="AOF（Append-only-file）"><a href="#AOF（Append-only-file）" class="headerlink" title="AOF（Append-only file）"></a>AOF（Append-only file）</h4><p>AOF以日志的形式来记录每个写操作（增量保存），将Redis执行过的所有写指令记录下来，只许追加文件但是不可以改写文件，Redis启动时会读取该文件重构数据，其实就是Redis重启会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。</p>
+<h5 id="AOF执行流程"><a href="#AOF执行流程" class="headerlink" title="AOF执行流程"></a>AOF执行流程</h5><ul>
+<li>客户端的写请求会被append追加到AOF缓冲区内。</li>
+<li>AOF缓冲区根据AOF的缓冲策略（always，everysec，no）将操作同步到磁盘的AOF文件中。</li>
+<li>AOF文件大小超过重写策略或者手动执行重写时，会对AOF文件进行重写，压缩AOF文件容量。</li>
+<li>Redis重启时会重写加载AOF文件中的写操作达到数据恢复的目的。</li>
+</ul>
+<p><strong>AOF和RDB同时开启时，Redis默认读取AOF的数据。</strong></p>
+<h5 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h5><h6 id="AOF开启"><a href="#AOF开启" class="headerlink" title="AOF开启"></a>AOF开启</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### AOF默认不开启</span><br><span class="line">appendonly no</span><br></pre></td></tr></table></figure>
+
+<h6 id="AOF文件配置"><a href="#AOF文件配置" class="headerlink" title="AOF文件配置"></a>AOF文件配置</h6><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### AOF文件名称</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;</span><br></pre></td></tr></table></figure>
+
+<h6 id="AOF同步策略"><a href="#AOF同步策略" class="headerlink" title="AOF同步策略"></a>AOF同步策略</h6><ul>
+<li><p>appendfsync always:始终同步，每次 Redis 的写入都会立刻记入日志;</p>
 </li>
-</ol>
-<p>举个例子，假设我们有一个类 <code>MyClass</code>，其中有一个方法 <code>myMethod()</code>。在代码中，我们写下了 <code>MyClass.myMethod()</code> 来调用这个方法。在编译时，这个调用被表示为符号引用。但是在运行时，虚拟机会查找 <code>MyClass</code> 类，找到 <code>myMethod()</code> 的实际地址，然后执行它。</p>
-<p>总之，动态链接的目的是在运行时将符号引用转换为实际的方法地址，以支持方法调用过程中的动态连接。</p>
+<li><p>appendfsync everysec:每秒同步，每秒记入日志一次，如果宕机，本秒的数据可能丢失;</p>
+</li>
+<li><p>appendfsync no:Redis 不主动进行同步，把同步时机交给操作系统;</p>
+</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 配置AOF同步策略</span><br><span class="line">appendfsync everysec</span><br></pre></td></tr></table></figure>
+
+<h6 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h6><p>当 <em><strong>AOF</strong></em> 文件的大小超过所设定的阈值时，<em><strong>Redis</strong></em> 就会启动 <em><strong>AOF</strong></em> 文件的内容压缩，只保留可以恢复数据的最小指令集。也可以使用命令 <em><strong>bgrewriteaof</strong></em>手动触发。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">no-appendfsunc-on-rewrite no</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb</span><br></pre></td></tr></table></figure>
+
+<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>备份机制更稳健，丢失数据概率更低；</li>
+<li>可读的日志文本，通过操作 <em><strong>AOF</strong></em> 稳健，可以处理误操作；</li>
+</ul>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>比起 <em><strong>RDB</strong></em> 占用更多的磁盘空间；</li>
+<li>恢复备份速度要慢；</li>
+<li>每次读写都同步的话，有一定的性能压力；</li>
+<li>存在个别 <em><strong>Bug</strong></em>，造成不能恢复</li>
+</ul>
+<h4 id="AOF与RDB选择"><a href="#AOF与RDB选择" class="headerlink" title="AOF与RDB选择"></a>AOF与RDB选择</h4><p>官方推荐两个都启用。如果对数据不敏感，可以选单独用 <em><strong>RDB</strong></em>。不建议单独用 <em><strong>AOF</strong></em>，因为可能会出现 <em><strong>Bug</strong></em>。如果只是做纯内存缓存，可以都不用。</p>
+<h2 id="Redis主从复制"><a href="#Redis主从复制" class="headerlink" title="Redis主从复制"></a>Redis主从复制</h2><p>Redis的主从复制，是将一台Redis服务器的数据复制到其他Redis服务器，前者称为Master，后者称为Slave，数据的复制是单向的，只能由Master到Slave。</p>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>数据冗余：主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。</li>
+<li>故障恢复：当主节点出现问题时，可以由从节点提供服务，实现快速的故障恢复，实质上是一种服务的冗余。</li>
+<li>负载均衡：在主从复制的基础上配合读写分离，可以由主节点提供写服务，由从节点提供读服务，分担服务器负载，尤其在写少读多的场景下，通过多个从节点分担读负载，可以大大提高Redis服务器的并发量。</li>
+<li>高可用基石：除了上述作用以外，主从复制还是哨兵机制和集群能够实施的基础，因此说主从复制时Redis高可用的基础。</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><blockquote>
+<p>在2.8版本之前只有全量复制，而2.8版本后有全量和增量复制。</p>
 </blockquote>
-<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><p>本地方法栈的作用和虚拟机栈的作用类似，唯一的区别就是虚拟机栈作用于<code>Java</code>方法，而本地方法栈作用于<code>Native</code>方法。它同样也会发生<code>OutOfMemoryError</code>和<code>StackOverFlowError</code>。</p>
-<p>但是注意其实&lt;&lt;JVM虚拟机规范&gt;&gt;对本地方法的实现并没有强制的规定，甚至<code>HotSpot VM</code>直接将本地方法栈和虚拟机栈合二为一。</p>
-<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是用于存储对象的一块内存区域，几乎所有的对象和数组都在堆上面进行分配。</p>
-<blockquote>
-<p>有一种特殊情况，即<strong>逃逸分析</strong>技术，它可以影响对象的分配位置。</p>
-<ol>
-<li><strong>逃逸分析</strong>：<ul>
-<li>逃逸分析是一种优化技术，用于确定对象的生命周期是否逃逸出方法。</li>
-<li>如果经过逃逸分析后发现，一个对象并没有逃逸出方法，那么就可能被优化成在<strong>栈上分配</strong>。</li>
-<li>栈上分配意味着对象不在堆上分配内存，而是直接在线程的栈空间上分配。</li>
+<ul>
+<li>全量复制：第一次进行复制时。</li>
+<li>增量复制：只会把主从库网络断连期间主库收到的命令，同步给从库。</li>
 </ul>
-</li>
-<li><strong>栈上分配</strong>：<ul>
-<li>当对象不逃逸出方法时，虚拟机可以将其分配到栈上。</li>
-<li>这样无需在堆上分配内存，也无须进行垃圾回收。</li>
-<li>栈上分配通常发生在局部变量、临时对象等情况下。</li>
-</ul>
-</li>
-</ol>
-<p>总之，虽然大部分对象仍在堆中分配，但逃逸分析技术使得一些对象可以在栈上分配，从而提高了性能和资源利用率。</p>
+<h3 id="全量同步"><a href="#全量同步" class="headerlink" title="全量同步"></a>全量同步</h3><blockquote>
+<p>当我们启动多个Redis实例的生活，他们相互之间就可以通过replicaof命令形成主库和从库的关系，之后会按照三个阶段完成数据的第一次同步。</p>
 </blockquote>
-<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区与堆一样是各个线程共享的内存区域，主要用于存储已被虚拟机加载的类型信息、常量、静态变量、即时编译后的代码缓存等数据。虽然&lt;&lt;JVM虚拟机规范&gt;&gt;中把方法区描述为一个堆的一个逻辑部分，但是它还有一个别名叫做”非堆”，目的就是与堆区分开。</p>
-<p>在 <code>JDK 6</code> 时，<code>HotSpot </code>开发团队就开始考虑放弃永久代，逐步改为使用本地内存来实现方法区。到了<code>JDK 7</code>的 <code>HotSpot</code>，已经将原本放在永久代的字符串常量池、静态变量等移到堆中。而在<code> JDK 8</code> 中，终于完全废弃了永久代的概念，改用元空间来代替。元空间将<code>JDK 7</code>中永久代剩余的内容（主要是类型信息）全部移到本地内存中。</p>
-<p><strong>永久代和元空间</strong>：</p>
-<ul>
-<li>永久代和元空间都是 <code>HotSpot</code> 虚拟机对《Java 虚拟机规范》中方法区的实现。</li>
-<li>在<code>JDK 1.8</code>之前，<code>HotSpot </code>使用永久代来实现方法区，但这样会导致 <code>JVM </code>调优比较困难，且容易发生 <code>OutOfMemoryError（OOM）</code>的问题。(不好估算方法区所需要的大小)</li>
-<li><code>JDK 1.8</code> 及之后，使用的是元空间存放在本地内存中的方式来替代永久代，降低了<code> OOM</code> 发生的可能性。</li>
+<h4 id="全量同步的三个阶段"><a href="#全量同步的三个阶段" class="headerlink" title="全量同步的三个阶段"></a>全量同步的三个阶段</h4><ul>
+<li>第一阶段是主从库间建立连接、协商同步的过程</li>
+<li>第二阶段主库将所有数据同步给从库</li>
+<li>第三阶段主库把第二阶段执行过程中新收到的写命令再发送给从库</li>
 </ul>
-<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>当<code>Class</code>文件编译后，<code>Class</code>文件中将会存在常量池，这部分内容将会在类加载完成时转化为运行时常量池。</p>
-<p>在<code>JDK 7</code>中将原本在永久代的运行时常量池移到堆中。</p>
-<ul>
-<li>运行时常量池是 <code>JVM </code>中的一块内存区域，用于存储类文件中的常量数据以及符号引用。</li>
-<li>在编译阶段，Java 类文件中的常量将会被分析和存储到运行时常量池中。</li>
-<li>运行时常量池可以看作是一张表，在程序运行时通过常量的索引值直接或间接地引用这些常量。</li>
+<h3 id="增量同步"><a href="#增量同步" class="headerlink" title="增量同步"></a>增量同步</h3><blockquote>
+<p>在Redis 2.8版本引入了增量复制。</p>
+</blockquote>
+<p>如果主从库在命令传播时出现了网络闪断，那么，从库就会和主库重新进行一次全量复制，开销非常大。从 Redis 2.8 开始，网络断了之后，主从库会采用增量复制的方式继续同步。</p>
+<p>repl_backlog_buffer：从主库断开之后，如何找到主从差异数据而设计的环形缓冲区，从而避免全量复制带来的性能开销，如果断开时间太久，repl_backlog_buffer环形缓冲区被主库的写命令覆盖了，那么从库连上主库后只能乖乖地进行一次全量复制，所以repl_backlog_buffer配置尽量大一点，可以降低主从断开后全量复制的概率。而在repl_backlog_buffer中找主从差异的数据后，如何发给从库呢？这里就用到了replication buffer。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000039223696">Redis多线程网络模型全面揭秘</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>发表</span><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">5 分钟读完 (大约716个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/30/2023-02-03_Reactor%E6%A8%A1%E5%9E%8B/">Reactor模型的多种模式</a></p><div class="content"><p>这篇文章介绍下Reactor的几种模式</p></div><a class="article-more button is-small is-size-7" href="/2023/01/30/2023-02-03_Reactor%E6%A8%A1%E5%9E%8B/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>发表</span><span class="level-item"><time dateTime="2023-01-30T14:00:00.000Z" title="2023/1/30 22:00:00">2023-01-30</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">5 分钟读完 (大约701个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/30/2023-01-31-Zookeeper%E4%B8%8ERedis%E4%B8%A4%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0/">Zookeeper与Redis两种分布式锁的实现</a></p><div class="content"><h2 id="什么是分布式锁？"><a href="#什么是分布式锁？" class="headerlink" title="什么是分布式锁？"></a>什么是分布式锁？</h2><p>在单机Java程序中来说，通常使用Lock相关类以及Synchronized关键字这类JDK自带的本地锁来控制一个JVM进程内的多个线程对本地共享资源的访问。但是在分布式部署场景下，Lock相关类以及Synchronized这类关键字并不能满足需求。</p>
+<h3 id="分布式锁需要满足的条件"><a href="#分布式锁需要满足的条件" class="headerlink" title="分布式锁需要满足的条件"></a>分布式锁需要满足的条件</h3><ul>
+<li>互斥：任意一个时刻，锁只能被一个线程持有。</li>
+<li>高可用：锁服务是高可用的，就算客户端代码错误，锁也一定会被释放，不会影响其他线程对共享资源的访问</li>
+<li>可重入：一个节点获取锁之后，还可以再次获取锁。</li>
 </ul>
-<p>运行时常量池相对于类文件常量池的另一个重要特征是具备<strong>动态性</strong>。Java 语言并不要求常量一定只有在编译期才能产生。也就是说，并非预置在类文件中常量池的内容才能进入方法区的运行时常量池。在运行期间，我们也可以将新的常量放入池中。这种特性被开发人员广泛利用，其中一个常见的例子就是 <code>String</code> 类的 <code>intern()</code> 方法。</p>
+<p>通常情况下，我们常用ZK和Redis实现分布式锁。</p>
+<h3 id="基于Redis实现的分布式锁"><a href="#基于Redis实现的分布式锁" class="headerlink" title="基于Redis实现的分布式锁"></a>基于Redis实现的分布式锁</h3><p>在Redis中可以通过setnx命令设置分布式锁。</p>
+<p>setnx语意：如果key不存在，则设置key的值。如果key已经存在则不做任何操作。</p>
+<h4 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h4><p>setnx设置锁-&gt;执行业务代码-&gt;del释放锁</p>
+<h4 id="设置过期时间"><a href="#设置过期时间" class="headerlink" title="设置过期时间"></a>设置过期时间</h4><p>为了避免以下场景：</p>
+<p>应用程序遇到一些问题比如释放给锁的逻辑突然挂掉，可能会导致锁无法被释放，从而造成死锁。</p>
+<p>所以给Key设置一个过期时间，来解决死锁问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">set</span> lockkey un</span><br></pre></td></tr></table></figure>
+
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>在经过上述问题的处理后，Redis分布式锁是否就完全安全了呢？答案是”否“</p>
+<p>比如在Sentinel集群中，当Master宕机，重新选举一个Master，这种情况可能会出现客户端明明在老的Master获取成功了，但是正好这个时候Master宕机了，Sentinel重新选举一个Master，丢失了该锁的数据，又可以重新获取这个锁，这样就导致锁失效问题。</p>
+<p>为了解决这个问题，后续有人发明了Redlock算法，他的流程比较复杂，为了使用Redlock，需要提供多个Redis示例，这些示例之间相互独立没有主从关系。同很多分布式算法一样，Redlock也使用[大多数机制]。</p>
+<p>加锁时，它会向过半节点发送加锁命令，只要过半节点加锁成功，那么久认为加锁成功，释放锁时，需要向所有节点发送del指令，不过Redlock算法还需要考虑很多细节问题，并且它比单实例Redis的性能会下降一些。</p>
+<p>目前Redission也没有内置Redlock算法。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">1 分钟读完 (大约174个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2022-02-01_JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3/">JVM垃圾回收详解</a></p><div class="content"><p>JVM垃圾回收笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/29/2022-02-01_JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">4 分钟读完 (大约567个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-01-29-JVM%E4%B9%8B%E5%A0%86%E7%A9%BA%E9%97%B4/">JVM之堆空间</a></p><div class="content"><h2 id="堆的核心概念"><a href="#堆的核心概念" class="headerlink" title="堆的核心概念"></a>堆的核心概念</h2><ul>
+<li>一个JVM示例只存在一个堆内存，堆也是Java内存管理的核心区域。</li>
+<li>Java堆区在JVM启动的时候即被创建，它的大小空间就被确定了。是JVM管理的最大一块内存空间。<ul>
+<li>堆内存的大小是可以调节的。</li>
+</ul>
+</li>
+<li>《Java虚拟机规范》规定，堆可以处于物理上不连续的内存空间中，但在逻辑上它应该是连续的。</li>
+<li>所有线程共享Java堆，在这里还可以划分线程私有的缓冲区(TLAB)。（这个存在的意义是堆内存是共享的，会存在线程安全问题，如果每次操作堆都进行互斥，那么堆空间的性能会很差，所以在这里划分出一个线程私有的缓冲区也就是TLAB）</li>
+</ul>
+<p>《Java虚拟机规范》中对Java堆的描述：几乎所有的对象实例以及数组都应当在运行时分配在堆上。</p>
 <ul>
-<li>String 类的 intern() 方法<ul>
-<li><code>intern()</code> 方法用于将字符串添加到运行时常量池中。</li>
-<li>如果字符串常量池中已经存在相同内容的字符串，<code>intern()</code> 方法会返回对已有字符串的引用。</li>
-<li>如果字符串常量池中不存在相同内容的字符串，<code>intern()</code> 方法会将该字符串添加到常量池并返回对它的引用。</li>
+<li>在方法结束后，堆的对象并不会马上被移除，当在垃圾回收的时候才会被移除。</li>
+<li>堆是GC执行垃圾回收的重点区域。</li>
+</ul>
+<h2 id="设置堆内存大小与OOM"><a href="#设置堆内存大小与OOM" class="headerlink" title="设置堆内存大小与OOM"></a>设置堆内存大小与OOM</h2><h2 id=""><a href="#" class="headerlink" title=""></a></h2><ul>
+<li>Eden</li>
+</ul>
+<h2 id="Minor-GC-MajorGC-FullGC"><a href="#Minor-GC-MajorGC-FullGC" class="headerlink" title="Minor GC &amp;&amp; MajorGC &amp;&amp; FullGC"></a>Minor GC &amp;&amp; MajorGC &amp;&amp; FullGC</h2><p>JVM进行垃圾回收，大部分回收的是新生代。</p>
+<p>针对Hotspot VM的实现，它里面的GC按照回收区域又分为两大类型：</p>
+<ul>
+<li>部分收集：不是完整的收集整个JAVA堆的垃圾收集。<ul>
+<li>新生代收集：只是新生代的垃圾收集。</li>
+<li>老年代收集：只是老年代的垃圾收集。<ul>
+<li>目前只有CMS GC会有单独收集老年代的行为。</li>
+<li>注意：很多时候Major GC会和Full GC混淆使用，需要具体分辨是老年代回收还是整堆回收。</li>
+</ul>
+</li>
+<li>混合收集（Mixed GC）：收集整个新生代以及部分老年代的垃圾收集。<ul>
+<li>目前，只有G1 GC有这种行为。</li>
 </ul>
 </li>
 </ul>
-<h3 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h3><p>直接内存（Direct Memory）并不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。但是这部分内存也被频繁地使用，而且也可能导致 <strong>OutOfMemoryError</strong> 异常出现，所以我们放到这里一起讲解。</p>
-<p>在 JDK 1.4 中新加入了 NIO（New Input&#x2F;Output）类，引入了一种基于通道（Channel）与缓冲区（Buffer）的 I&#x2F;O 方式，它可以使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆里面的 <code>DirectByteBuffer</code> 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆中来回复制数据。</p>
-<p>显然，本机直接内存的分配不会受到 Java 堆大小的限制，但是，既然是内存，则肯定还是会受到本机总内存（包括物理内存、SWAP 分区或者分页文件）大小以及处理器寻址空间的限制。一般服务器管理员配置虚拟机参数时，会根据实际内存去设置 <code>-Xmx</code> 等参数信息，但经常忽略掉直接内存，使得各个内存区域总和大于物理内存限制（包括物理的和操作系统级的限制），从而导致动态扩展时出现 <strong>OutOfMemoryError</strong> 异常。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>发表</span><span class="level-item"><time dateTime="2023-01-15T14:00:00.000Z" title="2023/1/15 22:00:00">2023-01-15</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">18 分钟读完 (大约2650个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">JVM的体系结构</a></p><div class="content"><p>JVM学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/15/2023-01-15_JVM%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-09T13:50:00.000Z" title="2023/1/9 21:50:00">2023-01-09</time>发表</span><span class="level-item"><time dateTime="2023-01-09T13:50:00.000Z" title="2023/1/9 21:50:00">2023-01-09</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">7 分钟读完 (大约977个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/09/2023-01-09_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E4%B9%8BSeata/">分布式事务解决方案之Seata</a></p><div class="content"><p>Seata学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/09/2023-01-09_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E4%B9%8BSeata/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-07T09:30:00.000Z" title="2023/1/7 17:30:00">2023-01-07</time>发表</span><span class="level-item"><time dateTime="2023-01-07T09:30:00.000Z" title="2023/1/7 17:30:00">2023-01-07</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">6 分钟读完 (大约972个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/07/2023-01-07_Kubernetes%E9%9B%86%E6%88%90NFS/">Kubernetes集成NFS</a></p><div class="content"><p>Kubernetes集成NFS学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/07/2023-01-07_Kubernetes%E9%9B%86%E6%88%90NFS/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-04T13:50:00.000Z" title="2023/1/4 21:50:00">2023-01-04</time>发表</span><span class="level-item"><time dateTime="2023-01-04T13:50:00.000Z" title="2023/1/4 21:50:00">2023-01-04</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">5 分钟读完 (大约725个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/04/2023-01-04_Nacos%E6%94%AF%E6%8C%81%E7%9B%91%E5%90%ACNamespace%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E9%85%8D%E7%BD%AE/">Nacos支持监听namespace下的所有配置</a></p><div class="content"><p>Nacos支持监听namespace下的所有配置文档</p></div><a class="article-more button is-small is-size-7" href="/2023/01/04/2023-01-04_Nacos%E6%94%AF%E6%8C%81%E7%9B%91%E5%90%ACNamespace%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E9%85%8D%E7%BD%AE/#more">阅读更多</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/01/03/2023-01-03_CentOS%207%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/"><img class="fill" src="/images/cover_1.png" alt="CentOS 7设置静态IP"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>发表</span><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">几秒读完 (大约104个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/03/2023-01-03_CentOS%207%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">CentOS 7设置静态IP</a></p><div class="content"><p>CentOS 7设置静态IP操作记录</p></div><a class="article-more button is-small is-size-7" href="/2023/01/03/2023-01-03_CentOS%207%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>发表</span><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">13 分钟读完 (大约1980个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/03/2023-01-03_%E5%9F%BA%E4%BA%8ETUN&amp;TAP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E4%B8%AA%E5%B1%80%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87%E4%B9%8B%E9%97%B4%E7%9A%84%E9%80%9A%E8%AE%AF/">基于TUN&amp;TAP实现多个局域网设备之间的通讯</a></p><div class="content"><p>讲解基于TUN&amp;TAP实现多个局域网设备之间的通讯的基本原理</p></div><a class="article-more button is-small is-size-7" href="/2023/01/03/2023-01-03_%E5%9F%BA%E4%BA%8ETUN&amp;TAP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E4%B8%AA%E5%B1%80%E5%9F%9F%E7%BD%91%E8%AE%BE%E5%A4%87%E4%B9%8B%E9%97%B4%E7%9A%84%E9%80%9A%E8%AE%AF/#more">阅读更多</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/01/03/2023-01-03_Docker%E4%B8%8EHarbor/"><img class="fill" src="/images/cover_1.png" alt="Docker与Harbor"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>发表</span><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">6 分钟读完 (大约851个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/03/2023-01-03_Docker%E4%B8%8EHarbor/">Docker与Harbor</a></p><div class="content"><p>Docker与Harbor笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/03/2023-01-03_Docker%E4%B8%8EHarbor/#more">阅读更多</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/01/03/2023-01-03_%E8%AF%81%E4%B9%A6/"><img class="fill" src="/images/cover_1.png" alt="证书"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>发表</span><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">15 分钟读完 (大约2318个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/03/2023-01-03_%E8%AF%81%E4%B9%A6/">证书</a></p><div class="content"><p>证书相关知识的学习笔记</p></div><a class="article-more button is-small is-size-7" href="/2023/01/03/2023-01-03_%E8%AF%81%E4%B9%A6/#more">阅读更多</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/01/03/2023-01-03_Docker%E9%83%A8%E7%BD%B2GitLab%20CI%20CD/"><img class="fill" src="/images/cover_1.png" alt="Docker部署GitLab CI_CD"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>发表</span><span class="level-item"><time dateTime="2023-01-03T07:46:00.000Z" title="2023/1/3 15:46:00">2023-01-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">1 分钟读完 (大约184个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/03/2023-01-03_Docker%E9%83%A8%E7%BD%B2GitLab%20CI%20CD/">Docker部署GitLab CI_CD</a></p><div class="content"><p>Docker与GitLab CI&#x2F;CD</p></div><a class="article-more button is-small is-size-7" href="/2023/01/03/2023-01-03_Docker%E9%83%A8%E7%BD%B2GitLab%20CI%20CD/#more">阅读更多</a></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/categories/%E6%8A%80%E6%9C%AF/page/3/">上一页</a></div><div class="pagination-next"><a href="/categories/%E6%8A%80%E6%9C%AF/page/5/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/">1</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/2/">2</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/3/">3</a></li><li><a class="pagination-link is-current" href="/categories/%E6%8A%80%E6%9C%AF/page/4/">4</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/5/">5</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">53</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">25</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">47</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">11</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">30</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%85/"><span class="tag">感情</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-16T16:37:00.000Z">2024-03-17</time></p><p class="title"><a href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/">我想成为一个怎样的人？</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-02-02_%E9%B2%9C%E8%8A%B1/">鲜花</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-03-08_%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/">常见的限流算法</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-01-30T08:36:00.000Z">2024-01-30</time></p><p class="title"><a href="/2024/01/30/2024-01-30_Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%88%97%E8%A1%A8(quicklist)/">Redis数据结构——快速列表(quicklist).md</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-18T07:46:00.000Z">2023-09-18</time></p><p class="title"><a href="/2023/09/18/2023-09-18_Kubernetes/">Kubernetes</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+</li>
+<li>整堆收集：收集整个JAVA堆和方法区的垃圾收集。</li>
+</ul>
+<h2 id="堆空间的参数总结"><a href="#堆空间的参数总结" class="headerlink" title="堆空间的参数总结"></a>堆空间的参数总结</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">几秒读完 (大约1个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-15-RabbitMQ%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">RabbitMQ知识总结</a></p><div class="content"><p>TODO</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">42 分钟读完 (大约6327个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-17-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">JVM垃圾回收</a></p><div class="content"><h2 id="为什么要进行GC？"><a href="#为什么要进行GC？" class="headerlink" title="为什么要进行GC？"></a>为什么要进行GC？</h2><ul>
+<li>对于高级语言来说，不断的生产对象，不进行垃圾回收，迟早内存会消耗完。</li>
+<li>GC除了清理无用的对象，也可以对内存碎片进行整理，空闲出连续的内存空间，以便JVM将整理出来的内存分配给新对象。</li>
+<li>随着业务越来越庞大，没有GC就不能保证程序的正常允许，随着GC的增多，STW的时间也会增多，所以才不断的需要对GC进行优化。</li>
+</ul>
+<h2 id="垃圾回收的早期行为"><a href="#垃圾回收的早期行为" class="headerlink" title="垃圾回收的早期行为"></a>垃圾回收的早期行为</h2><p>早期的语言，例如C、C++语言对内存的管理都是通过手动进行管理，通过对应的函数对内存进行管理，后期的高级语言例如Java、Golang、Ruby等语言都通过虚拟机对内存区域进行自动化的管理，这样可以要用户更专注于业务，但是如果遇到内存相关的问题，将会是一场灾难。</p>
+<h2 id="GC需要回收哪些垃圾？"><a href="#GC需要回收哪些垃圾？" class="headerlink" title="GC需要回收哪些垃圾？"></a>GC需要回收哪些垃圾？</h2><p>Java堆中存放着几乎所有的Java对象实例，在GC执行垃圾回收之前，首先需要区分出内存中哪些是存活的对象，哪些是死亡的对象。只有被标记为已经死亡的对象才会被回收。</p>
+<p>下面一共两种标记算法：</p>
+<h3 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h3><p>对每个对象保存一个整型的引用计数器属性，用于记录对象被引用的的情况，当被任何对象进行引用时，引用计数器就加一，当引用失效时，引用计数器就减一，当这个对象的引用计数器为0时，这个对象则可以被垃圾回收器进行回收。 </p>
+<h4 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h4><ul>
+<li>实现简单，判定效率高，回收没有延迟性。</li>
+</ul>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li>需要新增一个字段进行存储计数器，这样的做法增加了内存的开销。</li>
+<li>每次赋值都需要更新计数器，增加了时间的开销。</li>
+<li>无法处理循环引用的情况。</li>
+</ul>
+<h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><p>可达性分析算法是以根对象集合（GC Roots）为起始点，按照从上至下的方式搜索被根对象集合所连接的对象是否可达。</p>
+<p>使用可达性分析算法后，内存中存活的对象都被根对象集合直接或间接连接着，搜索所走过的路径称为引用链表。</p>
+<p>如果目标对象没有任何引用链表相连接，则是不可达的，就意味着该对象已经死亡，可以标记为垃圾对象。</p>
+<p>在可达性分析算法中，只有能够被根对象集合直接或者间接的对象才是存活对象。</p>
+<h4 id="作为GC-Roots包括以下元素："><a href="#作为GC-Roots包括以下元素：" class="headerlink" title="作为GC Roots包括以下元素："></a>作为GC Roots包括以下元素：</h4><ul>
+<li>虚拟机栈中引用的对象</li>
+<li>本地方法栈内JNI引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>所有被synchronized持有的对象</li>
+<li>Java虚拟机内部的引用</li>
+<li>反应Java虚拟机内部情况的JMXBean、JVMTI中注册的回调、本地代码缓存等。</li>
+</ul>
+<p><strong>注意：如果要使用可达性分析算法来判断内存是否可以回收，那么分析工作必须在一个能保障一致性的快照中进行。这点不满足的话分析结果的准确性就无法保证。这点也是GC进行时必须“Stop The World”的一个重要原因。即使是号称不会发生停顿的CMS收集器中，枚举根节点时也是必须要停顿的。</strong></p>
+<h2 id="finalization机制"><a href="#finalization机制" class="headerlink" title="finalization机制"></a>finalization机制</h2><h2 id="使用MAT和JProfile进行分析"><a href="#使用MAT和JProfile进行分析" class="headerlink" title="使用MAT和JProfile进行分析"></a>使用MAT和JProfile进行分析</h2><h2 id="垃圾清除"><a href="#垃圾清除" class="headerlink" title="垃圾清除"></a>垃圾清除</h2><h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><p>G1垃圾收集器是垃圾收集器技术发展历史上的里程碑式的成果，它开创了收集器面向局部收集的设计思路和基于Region的内存布局形式。</p>
+<p>G1是一款主要面向服务端应用的垃圾收集器。HotSpot开发团队最初赋予它的期望是（在比较长期的）未来可以替换掉JDK 5中发布的CMS收集器。现在这个期望目标已经实现过半了，JDK 9发布之日，G1宣告取代Parallel Scavenge加Parallel Old组合，成为服务端模式下的默认垃圾收集器。</p>
+<p>作为CMS收集器的替代者和继承人，设计者们希望做出一款能够建立起“停顿时间模型”（Pause Prediction Model）的收集器，停顿时间模型的意思是能够支持指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间大概率不超过N毫秒这样的目标，这几乎已经是实时Java（RTSJ）的中软实时垃圾收集器特征了。</p>
+<h2 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><p>垃圾收集器的实现设计大量的实现细节，在这里我们只讨论集中算法的思想以及发展过程，不探讨具体的实现细节。</p>
+<h3 id="标记清除算法"><a href="#标记清除算法" class="headerlink" title="标记清除算法"></a>标记清除算法</h3><p>最早出现的垃圾回收算法就是“标记清除算法”。具体思路就是：标记需要存活的对象，然后回收没有被标记的对象，反过来也是可行的。标记清除算法是最基础的算法，因为后续的收集算法大都都是以标记清除算法为基础进行实现的。</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点:"></a>缺点:</h4><ul>
+<li>执行效率不稳定，如果Java堆中大部分对象需要被回收，这时候必须要进行大量标记和清除的动作，导致标记和清除的执行效率过低。</li>
+<li>内存碎片化问题，标记、清除之后会产生大量不连续的内存碎片，空间碎片过多可能会导致后续再运行中没有足够的连续的内存空间分配较大的对象而不得不触发另一次垃圾回收。</li>
+</ul>
+<h3 id="标记复制算法"><a href="#标记复制算法" class="headerlink" title="标记复制算法"></a>标记复制算法</h3><p>标记复制算法为了解决面对大量可回收对象时执行效率低的问题，将可用内存划分为大小相等的两块，每次只使用其中一块，当这一块的内存用完了，就将还存货的对象复制到另外一块上面，然后再把已经使用的内存空间一次清理掉。</p>
+<h4 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h4><ul>
+<li>对于多数对象都是可回收的情况，只需要复制少量的对象，每次分配都市针对整个半区进行内存回收，也不需要考虑有空间碎片的情况，只要移动堆顶指针，按顺序进行分配即可。这样实现简单，运行高效。</li>
+</ul>
+<h4 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li>如果内存中多数对象都是存活的，这种算法会产生大量内存复制的开销。</li>
+<li>堆的可用空间缩小为原来的一半。</li>
+</ul>
+<p>在1989年提出了“Appel式回收”，HotSpot虚拟机的Serial、ParNew等新生代收集器均采用了这种策略来设计新生代的内存布局。它将新生代分为一块较大的Eden和两块较小的Survivor区域，每次分配只会使用Eden和其中一块Survivor区域，发生垃圾收集时，将Eden和Survivor中仍然存活的对象一次性复制到另外一块Survivor空间上，然后直接清理掉Eden和已用过的那块Survivor空间。发生垃圾回收时，将Eden和Survivor中仍然存活的对象一次性复制到另外一块Survivor空间上，然后直接清理掉Eden和已用过的那块Survivor空间。HotSpot虚拟机默认Eden和Survivor的大小比例是8:1，也即每次新生代中可用的内存是整个新生代容量的90%，当Survivor空间不足以容纳一次Minor GC之后存活的对象时，就需要依赖其他内存区域进行分配担保。</p>
+<h3 id="标记整理算法"><a href="#标记整理算法" class="headerlink" title="标记整理算法"></a>标记整理算法</h3><p>标记复制算法在对象存活率较高时就要进行较多的复制操作，效率会比较低下，所以在老年代一般不直接采用这种算法。</p>
+<p>针对老年代的存亡特征，1974年提出一种“标记整理算法”，其中的标记过程仍然与“标记清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存的一端进行移动，然后直接清理掉边界以外的内存。</p>
+<h2 id="垃圾收集器实现细节"><a href="#垃圾收集器实现细节" class="headerlink" title="垃圾收集器实现细节"></a>垃圾收集器实现细节</h2><p>TODO</p>
+<h2 id="垃圾收集器-1"><a href="#垃圾收集器-1" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><h3 id="Parallel-Scavenge垃圾收集器"><a href="#Parallel-Scavenge垃圾收集器" class="headerlink" title="Parallel Scavenge垃圾收集器"></a>Parallel Scavenge垃圾收集器</h3><p>HostSpot的年轻代除了拥有ParNew收集器是基于并行回收以外，Parallel Scavenge收集器同样也采用了复制算法、并行回收和“Stop The World”机制。</p>
+<p>那么Parallel收集器的出现是否多此一举？</p>
+<ul>
+<li><p>和ParNew收集器不同，Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量，它也被称为吞吐量优先的垃圾收集器。</p>
+</li>
+<li><p>自适应调节策略也是Parallel Scavenge与ParNew一个重要区别。</p>
+</li>
+<li><p>高吞吐量则可以高效率的利用CPU的资源，尽快完成程序的运算任务，主要适合在后台运算不需要太多交互的任务。例如，那些执行批量处理、订单处理、工资支付、科学计算的应用程序。</p>
+</li>
+<li><p>Parallel收集器在JDK1.6时提供了用于执行老年代垃圾收集的Parallel Old收集器，用来代替来年代的Serial Old收集器。</p>
+</li>
+<li><p>Parallel Old收集器采用了标记-压缩算法，但同样也是基于并行回收和”Stop the world”机制。</p>
+</li>
+<li><p>在程序吞吐量优先的场景中，Parallel收集器和Parallel Old收集器的租和，在Server模式下的内存回收性能很不错。</p>
+</li>
+<li><p>在Java8中，默认是此垃圾收集器。</p>
+</li>
+</ul>
+<h3 id="CMS垃圾收集器"><a href="#CMS垃圾收集器" class="headerlink" title="CMS垃圾收集器"></a>CMS垃圾收集器</h3><p>在JDK1.5时期，HotSpot推出一款在强交互应用中几乎可认为有划时代意义的垃圾收集器：CMS（Concurrent-Mark-Sweep）收集器，这款收集器是HotSpot虚拟机中第一款真正意义上的并发收集器，它第一次实现了要垃圾收集线程与用户线程同时工作。</p>
+<p>CMS收集器的关注点是尽可能缩短垃圾收集时用户线程的停顿时间，停顿时间越短就越适合与用户交互的程序，良好的响应速度可以提升用户的体验。</p>
+<p>CMS的垃圾收集器算法采用标记-清除算法，并且也会“Stop-the-world”。</p>
+<p>但是CMS作为老年代的收集器，却无法与JDK1.4.0中已经存在的新生代收集器Parallel Scavenge配合工作，所以在JDK1.5中使用CMS来收集老年代时，新生代只能选择ParNew或者Serial收集器中的一个。</p>
+<p>在G1出现之前，CMS使用还是非常广泛的。一直到现在，仍然还有很多系统使用CMS GC。</p>
+<h4 id="CMS优点"><a href="#CMS优点" class="headerlink" title="CMS优点"></a>CMS优点</h4><ul>
+<li>并发收集</li>
+<li>低延迟</li>
+</ul>
+<h4 id="CMS缺点"><a href="#CMS缺点" class="headerlink" title="CMS缺点"></a>CMS缺点</h4><ul>
+<li>会产生内存碎片，导致并发清除后，用户线程可用的空间不足。在无法分配大对象的情况下，不得不提前触发Full GC。</li>
+<li>CMS收集器对CPU资源非常敏感。在并发阶段，它虽然不会导致用户停顿，但是会因为占用了一部分线程而导致应用程序变慢，总吞吐量会降低。</li>
+<li>CMS收集器无法处理浮动垃圾。可能出现“Concurrent Mode Failure”失败而导致另一次Full GC的产生。在并发标记阶段由于程序的工作线程和垃圾收集线程是同时运行或者交叉运行的，那么在并发标记阶段如果产生新的垃圾对象，CMS将无法对这些垃圾对象进行标记，最终会导致这些新产生的垃圾无法被及时回收，从而知道在下一次执行GC时释放这些之前内存空间。</li>
+</ul>
+<h4 id="CMS垃圾收集器参数"><a href="#CMS垃圾收集器参数" class="headerlink" title="CMS垃圾收集器参数"></a>CMS垃圾收集器参数</h4><ul>
+<li>-XX:+UseConcMarkSweepGC：表明老年代使用CMS GC，同时年轻代触发对ParNew的使用。</li>
+<li>-XX:CMSLnitiatingOccupanyFraction：设置堆内存使用率的阈值，一旦达到该阈值，便开始进行回收。<ul>
+<li>JDK5及以前版本的默认值为68，也就是说老年代的空间使用率达到68%时，会触发一次CMS回收。JDK6及以上版本默认值为92%。</li>
+<li>如果内存增长缓慢可以设置一个稍大的值，大的阈值可以有效的减低CMS触发的频率，减少老年代回收的次数可以明显的改善程序的性能。反之，可以降低改阈值，反之频繁的触发Seral垃圾收集器。因此通过该选项可以有效的降低Full GC的执行次数。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/stone-98/picture-bed/raw/master/202303071059930.png" alt="image-20230307105919642"></p>
+<h3 id="垃圾收集器小结"><a href="#垃圾收集器小结" class="headerlink" title="垃圾收集器小结"></a>垃圾收集器小结</h3><p>HotSpot有这么多垃圾回收器，那么Serial GC、Parallel GC、Concurrent Mark Sweep GC这三个GC有何区别呢？</p>
+<ul>
+<li>最小化使用内存和并行的开销：Serial GC；</li>
+<li>最大化应用程序的吞吐量：Parallel GC；</li>
+<li>最小化GC的中断或停顿时间：CMS GC；</li>
+</ul>
+<h4 id="JDK后续版本中CMS的变化"><a href="#JDK后续版本中CMS的变化" class="headerlink" title="JDK后续版本中CMS的变化"></a>JDK后续版本中CMS的变化</h4><p><img src="https://gitee.com/stone-98/picture-bed/raw/master/202303071104919.png" alt="image-20230307110449050"></p>
+<h3 id="Garbage-First收集器"><a href="#Garbage-First收集器" class="headerlink" title="Garbage First收集器"></a>Garbage First收集器</h3><p>当前所面对的业务越来越庞大、复杂、用户量越来越多，所以不断的对GC进行优化，Garbage First垃圾收集器是在Java 7 update 4之后引入的一个新的垃圾回收器，是当前收集器技术发展的最前沿成果之一。</p>
+<p>为了适应现在不断扩大的内存和不断增加的处理器数量，进一步降低暂停时间，同时兼顾良好的吞吐量。官方给G1设定的目标是在延迟可控的情况下获得尽可能高的吞吐量，所以才担起“全功能收集器”的重担与期望。</p>
+<h4 id="GarbageFirst原理"><a href="#GarbageFirst原理" class="headerlink" title="GarbageFirst原理"></a>GarbageFirst原理</h4><p>G1是一个并行回收器，它把堆内存分割为很多不相关的区域（物理上是不连续的）。使用不同的区域来代表Eden、S0、S1、Old等区域。</p>
+<p>G1 GC有计划的避免在整个Java堆中进行全区域的垃圾收集。G1跟踪各个Region里面的垃圾堆积的价值大小（回收所获得的空间大小以及所需要的时间信息），在后台维护一个优先级列表，每次根据允许收集时间，优先回收价值最大的区域。</p>
+<h4 id="GarbageFirst的优势"><a href="#GarbageFirst的优势" class="headerlink" title="GarbageFirst的优势"></a>GarbageFirst的优势</h4><ul>
+<li><p>并发与并行</p>
+<ul>
+<li>并行性：G1在回收期间，可以有多个GC同时工作，有效利用多核计算能力。</li>
+<li>并发性：G1拥有与应用程序交替执行的能力，部分工作可以和应用程序同时执行，因此，一般来说，不会再整个回收阶段发生完全阻塞应用程序的情况。</li>
+</ul>
+</li>
+<li><p>分代收集</p>
+<ul>
+<li>从分代上看其实GarbageFirst还是属于分代型垃圾回收器，它会区分年轻代和老年代，年轻代依然有Eden区、Survivor区，但是从堆的结构上看，它不要求整个Eden区、年轻代或者老年代都是连续的，也不再坚持固定大小和固定数量。</li>
+<li>将堆空间分为若干个区域，这些区域中包含逻辑上的年轻代和老年代。</li>
+<li>和之前的各类垃圾回收器不同，它同时兼备年轻代和老年代，对比其他回收器，或者工作在年轻代，或者工作在老年代。</li>
+</ul>
+</li>
+<li><p>空间整合</p>
+<ul>
+<li>CMS：“标记-清除”算法、内存碎片、若干次GC后进行一次碎片整理。</li>
+<li>G1将内存划分为一个一个Region。内存的回收是以region作为基本单位的，Region之间是复制算法，但整体上可看作是“标记-压缩”算法，这两种算法都可以避免内存碎片。这种特性有利于程序长时间允许，分配大对象时不会因为无法找到连续的内存空间而提前触发下一次Full GC。尤其是当Java堆非常大的时候，G1的优势更加明显。</li>
+</ul>
+</li>
+<li><p>可预测的停顿时间模型</p>
+<p>这是G1相对于CMS的另一大优势，G1除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为M毫秒的时间段内，消耗在垃圾收集上的时间不超过N毫秒。</p>
+<ul>
+<li>由于分区的原因，可以先选取部分区域进行内存回收，这样缩小了回收的范围，因此对于全局停顿情况的发生也能得到较好的控制。</li>
+<li>G1跟踪各个Region里面的垃圾堆积的价值大小（回收所获得的空间大小以及所需要的时间信息），在后台维护一个优先级列表，每次根据允许的时间，优先回收价值最大的Region。保证了G1收集器在有限的时间内可以获取尽可能高的收集效率。</li>
+<li>相比于CMS GC，G1未必能做到CMS在最好情况下的延迟停顿，但是在最差的情况下要好很多。</li>
+</ul>
+</li>
+</ul>
+<h4 id="GarbageFirst缺点"><a href="#GarbageFirst缺点" class="headerlink" title="GarbageFirst缺点"></a>GarbageFirst缺点</h4><p>相较于CMS，G1还不具备全方位、压倒性优势。比如在用户程序运行过程中，G1无论是为了垃圾收集产生的内存占用还是程序运行时的额外负载都要比CMS要高。</p>
+<p>从经验上来说，在小内存应用上CMS的表现大概率会优于G1，而G1在大内存应用上则发挥其优势。平衡点在6-8GB之间。</p>
+<h4 id="GarbageFirst的参数设置"><a href="#GarbageFirst的参数设置" class="headerlink" title="GarbageFirst的参数设置"></a>GarbageFirst的参数设置</h4><h4 id="GarbageFirst使用场景"><a href="#GarbageFirst使用场景" class="headerlink" title="GarbageFirst使用场景"></a>GarbageFirst使用场景</h4><ul>
+<li><p>面向服务端应用，针对具有大内存，多处理器的机器。</p>
+</li>
+<li><p>最主要的应用时需要低延迟，并且具有大堆的应用程序的提供解决方案。</p>
+<ul>
+<li>例如：在堆大小约6GB或者更大时，可预测的暂停时间可以低于0.5s。（G1通过每次只清理一部分而不是全部的Region的增量式清理来保证每次GC停顿时间不会过长）</li>
+</ul>
+</li>
+<li><p>用来替换JDK1.5中的CMS收集器。</p>
+<p>在下列场景中G1可能比CMS更加适合</p>
+<ul>
+<li>超过50%的Java堆被活动数据占用；</li>
+<li>对象分配频率或年代提升频率变化很大；</li>
+<li>GC的停顿时间过长（长于0.5~1s）</li>
+</ul>
+</li>
+<li><p>HotSpot垃圾收集器里，除了G1以外，其他垃圾收集器使用内置的JVM线程执行GC的多线程操作，而G1 GC可以采用应用线程承担后台运行的GC工作，即当JVM的GC线程处理速度慢时，系统会调用应用程序的线程去加速垃圾的回收。</p>
+</li>
+</ul>
+<h4 id="GrabageFirst垃圾回收器的主要环节"><a href="#GrabageFirst垃圾回收器的主要环节" class="headerlink" title="GrabageFirst垃圾回收器的主要环节"></a>GrabageFirst垃圾回收器的主要环节</h4><ul>
+<li>年轻代GC（Young GC）</li>
+<li>老年代并发标记过程（Concurrent Marking）</li>
+<li>混合回收（Mixed GC）</li>
+<li>如果需要，Full GC还是继续存在。它针对GC的评估失败提供一种保护措施，即强力回收。</li>
+</ul>
+<h4 id="Remembered-Set"><a href="#Remembered-Set" class="headerlink" title="Remembered Set"></a>Remembered Set</h4><p>Region中的对象可能被其他任意Region中对象所引用，那么如果我们对一个Region进行Minor GC时，需要判断此Region的对象是否存活，那么是否需要进行整个堆扫描才能保证结果的准确率呢？其实不仅仅是G1垃圾收集器有此问题，其他的垃圾收集器也有此问题，只是G1垃圾收集器此问题更加突出（因为G1相对来说有更多的Region），如果进行整个堆的扫描的话，肯定会降低Minor GC的效率。</p>
+<p>其实无论是G1还是其他分代收集器，都是通过Remembered Set来避免全局扫描，每一个Region都有一个对应的Remembered Set，每次Reference类型数据写操作时，都会产生一个Write Barrier（写屏障）暂时中断的操作。然后检查要写入的引用指向的对象是否和该Reference类型数据在不同的Region，如果不同，则通过CardTable把相关引用信息记录到引用指向对象所在Region对应的Remembered Set中。当进行垃圾收集时，在GC根节点的枚举范围加入Remembered Set，就可以保证不进行全局扫描，并且也不会有遗漏。</p>
+<h4 id="G1垃圾收集器回收过程"><a href="#G1垃圾收集器回收过程" class="headerlink" title="G1垃圾收集器回收过程"></a>G1垃圾收集器回收过程</h4><h4 id="G1垃圾收集器优化建议"><a href="#G1垃圾收集器优化建议" class="headerlink" title="G1垃圾收集器优化建议"></a>G1垃圾收集器优化建议</h4><p>从Oracle官方透漏出来的信息可知，回收阶段其实本来也想设计成与用户程序一起并发指向，但是具体的实现可能比较复杂，考虑到G1只是回收一部分Region，停顿时间是用户可控制的，所以并不迫切去实现。选择把此特性放到了G1之后的低延迟垃圾收集器（ZGC）中。</p>
+<ul>
+<li><p>年轻代的大小</p>
+<ul>
+<li>避免使用-Xmn或-XX:NewRatio等相关参数显示设置年轻代大小。</li>
+<li>固定年轻代的大小不合理的话导致暂停时间的目标可能就达不到，所以要JVM动态去调整年轻代的大小。</li>
+</ul>
+</li>
+<li><p>暂停时间设置的不要太过于严苛</p>
+<ul>
+<li>G1 GC的吞吐量目标是90%的应用程序时间和10%的垃圾回收时间</li>
+<li>评估G1 GC的吞吐量时，暂停的时间目标太过严苛，表示你愿意承受更多垃圾回收的开销，而这些会直接影响到吞吐量。</li>
+</ul>
+</li>
+</ul>
+<p>Region中还有一块特殊的区域，专门用来存储大对象。G1认为只要大小超过了一个Region容量一半的对象即可判定为大对象。每个Region的大小可能通过参数-XX：G1HeapRegionSize设定，取值范围1MB~32MB，而对于那些超过了整个Region容量的超级大对象，将会被存放在N个连续的Region之中，G1的大多数行为都把Humongous Region作为老年代的一部分来看待。</p>
+<h3 id="ZGC"><a href="#ZGC" class="headerlink" title="ZGC"></a>ZGC</h3><p>G1垃圾收集器通过部分区域回收的处理形式，解决了传统垃圾收集器中的全堆扫描所带来的性能问题，极大的改善在堆内存较大情况下的停顿时间，但是随着硬件性能的发展，G1回收器也同样受到了极大的性能限制。</p>
+<p>所以Oracle为OpenJDK开源了一款ZGC垃圾回收器，ZGC是一款可伸缩、低延迟、并发垃圾回收器，ZGC的出现旨在实现以下目标：</p>
+<ul>
+<li>停顿时间不超过10ms</li>
+<li>停顿时间不随heap大小或存活对象大小增大而增大</li>
+<li>可以处理几百M到几T的内存大小</li>
+</ul>
+<p>ZGC是一款基于Region布局，但是不设置分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-压缩算法，以低延迟为首要目标的一款垃圾收集器。</p>
+<p>ZGC几乎在所有地方都并发指向，除了初始化标记是STW的，所以停顿时间就耗费在初始标记上，实际上这部分时间是非常少的。</p>
+<p>ZGC性能对比：</p>
+<p><img src="C:/Users/admin/AppData/Roaming/Typora/typora-user-images/image-20230309175922843.png" alt="image-20230309175922843"></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>发表</span><span class="level-item"><time dateTime="2023-01-29T14:00:00.000Z" title="2023/1/29 22:00:00">2023-01-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">4 分钟读完 (大约663个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/29/2023-02-22-JVM%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">JVM性能调优</a></p><div class="content"><h2 id="性能监控"><a href="#性能监控" class="headerlink" title="性能监控"></a>性能监控</h2><p>监控点：</p>
+<ul>
+<li>GC频繁</li>
+<li>CPU Load过高</li>
+<li>OOM</li>
+<li>内存泄漏</li>
+<li>死锁</li>
+<li>程序响应时间较长</li>
+</ul>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>一种侵入式收集运行性能数据的活动，它会影响应用的吞吐量或响应性。</p>
+<p>性能分析是针对性能问题的答复结果，关注的范围通常比性能监控更加集中。</p>
+<p>性能分析很少在生产环境下进行，通常是在质量评估、系统测试或者开发环境下进行，是性能监控之后的步骤。</p>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>一种为改善应用响应或吞吐量而更改参数、源代码、属性配置的活动，性能调优是在性能监控、性能分析之后的活动。</p>
+<p>主要就是改善GC和Full GC出现的次数以及减少内存占用。</p>
+<h2 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h2><ul>
+<li>停顿时间</li>
+<li>吞吐量：<ul>
+<li>单元时间内完成的工作量</li>
+<li>在GC中运行用户代码占总运行时间的比例（总运行时间：程序的运行时间+内存回收时间）吞吐量为1-1&#x2F;（1+n）。-XX：GCTimeRatio&#x3D;n</li>
+</ul>
+</li>
+<li>并发数：同一时刻对服务器有实际交互的请求数</li>
+<li>内存占用：Java堆区所占用的内存大小</li>
+</ul>
+<h2 id="JDK自带的监控工具"><a href="#JDK自带的监控工具" class="headerlink" title="JDK自带的监控工具"></a>JDK自带的监控工具</h2><h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>查看正在运行的Java进程，类似jps命令可以方便查看Java进程的启动类、传入参数和Java虚拟机参数等信息。</p>
+<p>参数说明：</p>
+<ul>
+<li>-q：只输出进程ID</li>
+<li>-m：输出传入main方法的参数</li>
+<li>-l：输出完整的包名，应用主类名，jar的完全路径名</li>
+<li>-v：输出jvm参数</li>
+<li>-V：输出通过flag文件传递到JVM中的参数</li>
+</ul>
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>jstat是一款轻量级小工具，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括对Heap size和垃圾回收的监控。</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041577984">Jstat命令详解</a></p>
+<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p>jinfo它主要的作用就是实时查看和修改VM参数。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8d8aef212b25">jinfo命令详解</a></p>
+<h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>jmap是用多功能的命令。它可以生成Java程序dump文件，也可以查看堆内对象示例的统计信息、查看ClassLoader的信息以及finalizer队列。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a4ad53179df3">jmap详解</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sxdcgaq8080/p/11089664.html">https://www.cnblogs.com/sxdcgaq8080/p/11089664.html</a></p>
+<h3 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h3><h3 id="jcmd"><a href="#jcmd" class="headerlink" title="jcmd"></a>jcmd</h3><h2 id="图形化监控界面"><a href="#图形化监控界面" class="headerlink" title="图形化监控界面"></a>图形化监控界面</h2><h3 id="VisualVM"><a href="#VisualVM" class="headerlink" title="VisualVM"></a>VisualVM</h3><h3 id="MAT"><a href="#MAT" class="headerlink" title="MAT"></a>MAT</h3><p>mat主要是用来分析dump文件的。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-01-17T14:00:00.000Z" title="2023/1/17 22:00:00">2023-01-17</time>发表</span><span class="level-item"><time dateTime="2023-01-17T14:00:00.000Z" title="2023/1/17 22:00:00">2023-01-17</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">24 分钟读完 (大约3529个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/01/17/2023-01-17_JVM%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%AD%90%E7%B3%BB%E7%BB%9F/">JVM的类加载子系统</a></p><div class="content"><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><h3 id="类加载器子系统作用"><a href="#类加载器子系统作用" class="headerlink" title="类加载器子系统作用"></a>类加载器子系统作用</h3><p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543193.png" alt="image-20230117164809670"></p>
+<ul>
+<li>类加载器子系统负责从文件系统或者网络中加载Class文件，class文件在文件开头有特定的文件标识。</li>
+<li>ClassLoader只负责class文件的加载，至于它是否可以运行，则由Execution Engine决定。</li>
+<li>加载的类信息存放于一块称为方法区的内存空间。除了类的信息外，方法区中还会存放运行时常量池信息，可能还包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）</li>
+</ul>
+<p><strong>ClassLoader角色的作用</strong></p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543936.png" alt="image-20230117164923103"></p>
+<ul>
+<li>Car class file存在于本地硬盘上，可以理解为设计师画在纸上的模板，而最终这个模板在执行的时候是要加载到JVM当中来根据这个文件实例化出n个一模一样的实例。</li>
+<li>class file加载到JVM中，被称为DNA元数据模板，放在方法区。</li>
+<li>在.class文件-&gt;JVM-&gt;最终成为元数据模板，此过程就要一个运输工具（类装载器Class Loader），扮演一个快递员的角色。</li>
+</ul>
+<h3 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h3><p><strong>注意这里的加载过程是一个宏观上的概念！</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloLoader</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用流程图表示上述示例代码：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543247.png" alt="image-20230117165203028"></p>
+<h2 id="类的加载过程"><a href="#类的加载过程" class="headerlink" title="类的加载过程"></a>类的加载过程</h2><h3 id="加载阶段"><a href="#加载阶段" class="headerlink" title="加载阶段"></a>加载阶段</h3><ul>
+<li>通过一个类的全限定名获取定义此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口</li>
+</ul>
+<blockquote>
+<p>加载class文件的方式:</p>
+<ul>
+<li>从本地系统中直接加载</li>
+<li>通过网络获取，典型场景：Web Applet</li>
+<li>从zip压缩包中读取，成为日后jar、war格式的基础</li>
+<li>运行时计算生成，使用最多的是：动态代理技术</li>
+<li>由其他文件生成，典型场景：JSP应用</li>
+<li>从专有数据库中提取.class文件，比较少见</li>
+<li>从加密文件中获取，典型的防Class文件被反编译的保护措施</li>
+</ul>
+</blockquote>
+<h3 id="链接阶段"><a href="#链接阶段" class="headerlink" title="链接阶段"></a>链接阶段</h3><h4 id="验证（Verify）"><a href="#验证（Verify）" class="headerlink" title="验证（Verify）"></a>验证（Verify）</h4><ul>
+<li>目的确保Class文件的字节流中包含的信息符合当前虚拟机的要求，保证被加载类的正确性，不会危害虚拟机的自身安全</li>
+</ul>
+<h4 id="准备（Prepare）"><a href="#准备（Prepare）" class="headerlink" title="准备（Prepare）"></a>准备（Prepare）</h4><ul>
+<li>为类变量分配内存并且设置该类变量的默认初始值，即零值。</li>
+<li>不包含final修饰的static，因为final在编译期间就分配了，准备阶段会显式初始化。</li>
+<li>不会为实例变量分配初始化，类变量会分配在方法区，而实例变量则是分配到堆中。</li>
+</ul>
+<h4 id="解析（Resolve）"><a href="#解析（Resolve）" class="headerlink" title="解析（Resolve）"></a>解析（Resolve）</h4><ul>
+<li>将常量池内的符号引用转化为直接引用<ul>
+<li>符号引用：一组符号来描述所引用的目标，符号引用的字面量形式明确定义在《java虚拟机规范》的Class文件格式中。</li>
+<li>直接引用：直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄。</li>
+</ul>
+</li>
+<li>事实上，解析操作往往会伴随着JVM在执行完初始化之后再执行。？</li>
+<li>解析动作主要是针对类或接口、字段、类方法、接口方法、方法类型等。对应常量池中的CONSTANT_Class_info，CONSTANT_Fieldref_info、CONSTANT_Methodref_info等。</li>
+</ul>
+<h3 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h3><ul>
+<li>初始化阶段就是执行类构造器方法<clinit>的过程。</li>
+<li>此方法不需定义，是javac编译器自动收集类中的所有类变量的赋值动作和静态代码块中的语句合并而来。</li>
+<li>构造器方法中指令按语句在源文件中出现的顺序执行。</li>
+<li>若该类具有父类，JVM会保证子类的<clinit>()执行前，父类的<clinit>()已经执行完毕。</li>
+<li>虚拟机必须保证一个类的<clinit>()方法在多线程下被同步加锁。</li>
+</ul>
+<h2 id="类加载器的分类"><a href="#类加载器的分类" class="headerlink" title="类加载器的分类"></a>类加载器的分类</h2><p>JVM支持两种类型的类加载器，分别为引导类加载器和自定义加载器。从一般的看法来看，自定义类加载器通常指的是程序中由开发人员自定义的一类类加载器，但是《Java虚拟机规范》中却定义为将所有派生于ClassLoader的类加载器都划分为自定义类加载器。</p>
+<p>无论类加载器如何划分，在程序中我们常见的类加载器始终只有三个，如下图所示：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543898.png" alt="image-20230118101519582"></p>
+<h3 id="虚拟机自带的类加载器"><a href="#虚拟机自带的类加载器" class="headerlink" title="虚拟机自带的类加载器"></a>虚拟机自带的类加载器</h3><h4 id="Bootstrap-ClassLoader"><a href="#Bootstrap-ClassLoader" class="headerlink" title="Bootstrap ClassLoader"></a>Bootstrap ClassLoader</h4><ul>
+<li>这个类加载使用C&#x2F;C++语言实现的，嵌套在JVM内部。</li>
+<li>它用来加载Java的核心库（JAVA_HOME&#x2F;jre&#x2F;lib&#x2F;rt.jar、resources.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类。</li>
+<li>并不继承自ava.lang.ClassLoader，没有父加载器。</li>
+<li>加载扩展类（sun.misc.Launcher$ExtClassLoader）和应用程序类加载器（sun.misc.Launcher$AppClassLoader），并指定为他们的父类加载器。</li>
+<li>出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun等开头的类。</li>
+</ul>
+<h4 id="Extension-ClassLoader"><a href="#Extension-ClassLoader" class="headerlink" title="Extension ClassLoader"></a>Extension ClassLoader</h4><ul>
+<li>Java语言编写，由sun.misc.Launcher$ExtClassLoader实现。</li>
+<li>派生于ClassLoader类。</li>
+<li>父类加载器为启动类加载器。</li>
+<li>从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre&#x2F;1ib&#x2F;ext子目录（扩展目录）下加载类库。如果用户创建的JAR放在此目录下，也会自动由扩展类加载器加载。</li>
+</ul>
+<h4 id="App-ClassLoader"><a href="#App-ClassLoader" class="headerlink" title="App ClassLoader"></a>App ClassLoader</h4><ul>
+<li>java语言编写，由sun.misc.LaunchersAppClassLoader实现。</li>
+<li>派生于ClassLoader类。</li>
+<li>父类加载器为扩展类加载器。</li>
+<li>它负责加载环境变量classpath或系统属性java.class.path指定路径下的类库。</li>
+<li>该类加载是程序中默认的类加载器，一般来说，Java应用的类都是由它来完成加载。</li>
+<li>通过ClassLoader#getSystemclassLoader() 方法可以获取到该类加载器。</li>
+</ul>
+<h3 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h3><p>在Java的日常应用程序开发中，类的加载几乎是由上述3种类加载器相互配合执行的，在必要时，我们还可以自定义类加载器，来定制类的加载方式。 </p>
+<h4 id="自定义类加载器的作用"><a href="#自定义类加载器的作用" class="headerlink" title="自定义类加载器的作用"></a>自定义类加载器的作用</h4><ul>
+<li>隔离加载类（例如Tomcat要同时部署多个Web应用程序，例如每个都有com.xxx.User类型，但是他们的具体类型是不一样的，所以Tomcat要对它进行隔离，能够加载多个User对象。）</li>
+<li>修改类加载的方式</li>
+<li>扩展加载源</li>
+<li>防止源码泄漏（用于字节码文件进行加密的场景）</li>
+</ul>
+<h4 id="用户自定义加载器的步骤"><a href="#用户自定义加载器的步骤" class="headerlink" title="用户自定义加载器的步骤"></a>用户自定义加载器的步骤</h4><ul>
+<li>开发人员可以通过继承抽象类ava.lang.ClassLoader类的方式，实现自己的类加载器，以满足一些特殊的需求</li>
+<li>在JDK1.2之前，在自定义类加载器时，总会去继承ClassLoader类并重写loadClass() 方法，从而实现自定义的类加载类，但是在JDK1.2之后已不再建议用户去覆盖loadclass() 方法，而是建议把自定义的类加载逻辑写在findClass()方法中。</li>
+<li>在编写自定义类加载器时，如果没有太过于复杂的需求，可以直接继承URLClassLoader类，这样就可以避免自己去编写findClass()  方法及其获取字节码流的方式，使自定义类加载器编写更加简洁。</li>
+</ul>
+<h2 id="ClassLoader使用说明"><a href="#ClassLoader使用说明" class="headerlink" title="ClassLoader使用说明"></a>ClassLoader使用说明</h2><p>对于ClassLoader的相关API，可以通过Oracle官方API文档进行了解。</p>
+<p>sun.misc.Launcher 它是一个Java虚拟机的入口应用。ExtClassLoader和AppClassLoader都定义在Launcher中。</p>
+<p>相关ClassLoader的继承结构如图所示：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543671.png" alt="image-20230118104429702"></p>
+<h2 id="相关验证Demo"><a href="#相关验证Demo" class="headerlink" title="相关验证Demo"></a>相关验证Demo</h2><p>对上述三种ClassLoader进行相关的验证。<a target="_blank" rel="noopener" href="https://github.com/stone-98/small-example/tree/master/example-java/jvm/src/main/java/org/stone98/example/jvm/classloader">源码链接</a></p>
+<p>具体实现如下图所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassLoaderTest01</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 获取系统类加载器</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">systemClassLoader</span> <span class="operator">=</span> ClassLoader.getSystemClassLoader();</span><br><span class="line">        <span class="comment">// 输出sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line">        System.out.println(systemClassLoader);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通过系统类加载器获取它上层的扩展类加载器</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">extClassLoader</span> <span class="operator">=</span> systemClassLoader.getParent();</span><br><span class="line">        <span class="comment">// 输出sun.misc.Launcher$ExtClassLoader@4554617c</span></span><br><span class="line">        System.out.println(extClassLoader);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 获取扩展类加载器的上层启动类加载器，由输出可知启动类加载器获取不到，所以输出为null</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">boostrapClassLoader</span> <span class="operator">=</span> extClassLoader.getParent();</span><br><span class="line">        <span class="comment">// 输出null</span></span><br><span class="line">        System.out.println(boostrapClassLoader);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 对于用户自定义类的类加载器，从输出结果得知使用系统默认的AppClassLoader进行加载</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> ClassLoaderTest01.class.getClassLoader();</span><br><span class="line">        <span class="comment">// 输出sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line">        System.out.println(classLoader);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// 由输出为null得知，String类使BootstrapClassLoader进行加载</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">stringClassLoader</span> <span class="operator">=</span> String.class.getClassLoader();</span><br><span class="line">        <span class="comment">// 输出null</span></span><br><span class="line">        System.out.println(stringClassLoader);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对系统的默认类加载器是AppClassLoader进行验证</li>
+<li>验证三种ClassLoader的结构</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassLoaderTest02</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;打印BootstrapClassLoader加载的路径：&quot;</span>);</span><br><span class="line">        URL[] urLs = Launcher.getBootstrapClassPath().getURLs();</span><br><span class="line">        <span class="keyword">for</span> (URL urL : urLs) &#123;</span><br><span class="line">            System.out.println(urL.toExternalForm());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从上述路径中随意找一个Class获取它的类加载器，看是否符合我们的猜想。</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">bootstrapClassLoader</span> <span class="operator">=</span> Provider.class.getClassLoader();</span><br><span class="line">        <span class="comment">// 从输出结果得知，Provider的类加载器为BootstrapClassLoader</span></span><br><span class="line">        System.out.println(bootstrapClassLoader);</span><br><span class="line">        System.out.println(<span class="string">&quot;打印ExtClassLoader加载的路径：&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">extDirs</span> <span class="operator">=</span> System.getProperty(<span class="string">&quot;java.ext.dirs&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (String path : extDirs.split(<span class="string">&quot;;&quot;</span>)) &#123;</span><br><span class="line">            System.out.println(path);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从上述路径中随意找一个Class获取它的类加载器，看是否符合我们的猜想。</span></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">extClassLoader</span> <span class="operator">=</span> CurveDB.class.getClassLoader();</span><br><span class="line">        <span class="comment">// 从输出结果得知，符合我们的验证</span></span><br><span class="line">        System.out.println(extClassLoader);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>验证BootstrapClassLoader加载的Class</li>
+<li>验证ExtClassLoaderr加载的类</li>
+</ul>
+<h2 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h2><p>JVM加载Class的模式是按需加载，也是就是当JVM要使用到这个类的时候，才会对他进行加载，而且加载某个类时会采用双亲委派机制。</p>
+<h3 id="双亲委派机制的工作原理"><a href="#双亲委派机制的工作原理" class="headerlink" title="双亲委派机制的工作原理"></a>双亲委派机制的工作原理</h3><ul>
+<li>如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行；</li>
+<li>如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器；</li>
+<li>如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式</li>
+</ul>
+<p>双亲委派机制工作流程如下图所示：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543579.png" alt="image-20230118173746304"></p>
+<p>举例说明：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202403201543233.png" alt="image-20230118175553571"></p>
+<p>首先通过bootstrap loader加载rt.jar中的spi接口，然后spi接口调用具体实现类的方法，再通过上下文加载器(默认为AppClassLoader)加载具体的第三方Class（jdbc.jar）。</p>
+<h3 id="双亲委派机制的优点"><a href="#双亲委派机制的优点" class="headerlink" title="双亲委派机制的优点"></a>双亲委派机制的优点</h3><ul>
+<li>避免类的重复加载</li>
+<li>保护程序安全，防止核心API被篡改（例如JVM自带的API，不能被自定义的类进行覆盖）</li>
+</ul>
+<h3 id="如何判断两个Class是否相同"><a href="#如何判断两个Class是否相同" class="headerlink" title="如何判断两个Class是否相同"></a>如何判断两个Class是否相同</h3><p>在JVM中判断两个Class相同时，必须满足以下条件：</p>
+<ul>
+<li>全限类名相同</li>
+<li>这两个类的Classloader必须一致</li>
+</ul>
+<h3 id="对类加载器的引用"><a href="#对类加载器的引用" class="headerlink" title="对类加载器的引用"></a>对类加载器的引用</h3><p>JVM必须知道一个类型是由启动加载器加载的还是由用户类加载器加载的（使用用户自定义的类加载器加载的类，会将类信息保存在方法区，方法区还记录了当前类使用的Classloader，启动类加载器本身就是null，所以就不需要进行记录了）。如果一个类型是由用户类加载器加载的，那么JVM会将这个类加载器的一个引用作为类型信息的一部分保存在方法区中。当解析一个类型到另一个类型的引用的时候，JVM需要保证这两个类型的类加载器是相同的（TODO 这里不是很懂）。</p>
+<h3 id="类的主动使用和被动使用-TODO-这里不是很懂"><a href="#类的主动使用和被动使用-TODO-这里不是很懂" class="headerlink" title="类的主动使用和被动使用(TODO 这里不是很懂)"></a>类的主动使用和被动使用(TODO 这里不是很懂)</h3><p>Java程序对类的使用方式分为：主动使用和被动使用。主动使用，又分为七种情况：</p>
+<ul>
+<li>创建类的实例 </li>
+<li>访问某个类或接口的静态变量，或者对该静态变量赋值 </li>
+<li>调用类的静态方法 </li>
+<li>反射（比如：Class.forName（”com.atguigu.Test”）） </li>
+<li>初始化一个类的子类 </li>
+<li>Java虚拟机启动时被标明为启动类的类 </li>
+<li>JDK 7 开始提供的动态语言支持：java.lang.invoke.MethodHandle实例的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic句柄对应的类没有初始化，则初始化</li>
+</ul>
+<p>除了以上七种情况，其他使用Java类的方式都被看作是对类的被动使用，都不会导致类的初始化。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/w605283073/article/details/103209221">IDEA字节码学习查看神器jclasslib bytecode viewer介绍</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/">Oracle JDK8 API官方文档</a></p>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/categories/%E6%8A%80%E6%9C%AF/page/3/">上一页</a></div><div class="pagination-next"><a href="/categories/%E6%8A%80%E6%9C%AF/page/5/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/">1</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/2/">2</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/3/">3</a></li><li><a class="pagination-link is-current" href="/categories/%E6%8A%80%E6%9C%AF/page/4/">4</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/5/">5</a></li><li><a class="pagination-link" href="/categories/%E6%8A%80%E6%9C%AF/page/6/">6</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">62</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">30</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">55</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI&amp;CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Gitlab/"><span class="tag">Gitlab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">32</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%9F%BA%E7%A1%80/"><span class="tag">Java基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%84%9F%E6%83%85/"><span class="tag">感情</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-26T13:49:44.000Z">2024-04-26</time></p><p class="title"><a href="/2024/04/26/2024-04-26_Mysql%E7%9A%84Select%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">理解MySQL的Select语句的执行顺序</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-04-18T14:37:42.000Z">2024-04-18</time></p><p class="title"><a href="/2024/04/18/2024-04-18_Config%20a%20fuzzy%20listen%20scheme%EF%BC%88%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%B3%8A%E7%9B%91%E5%90%AC%E6%96%B9%E6%A1%88%EF%BC%89/">Config a fuzzy listen scheme（配置模糊监听方案）</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-16T16:37:00.000Z">2024-03-17</time></p><p class="title"><a href="/2024/03/17/2024-03-17_%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%80%8E%E6%A0%B7%E7%9A%84%E4%BA%BA/">我想成为一个怎样的人？</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-03-08_%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95/">常见的限流算法</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-02-02T10:00:00.000Z">2024-02-02</time></p><p class="title"><a href="/2024/02/02/2024-02-02_%E9%B2%9C%E8%8A%B1/">鲜花</a></p><p class="categories"><a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,

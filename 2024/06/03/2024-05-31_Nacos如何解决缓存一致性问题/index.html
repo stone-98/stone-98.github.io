@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Nacos如何解决缓存一致性问题 - skYxg</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#3273dc"><meta name="application-name" content="skYxg"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#3273dc"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="skYxg"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="缓存一致性在分布式系统中是一个常见的问题，针对这个问题不同的业务场景有不同的解决方案，这篇文章主要介绍下Nacos如何解决缓存一致性问题。"><meta property="og:type" content="blog"><meta property="og:title" content="Nacos如何解决缓存一致性问题"><meta property="og:url" content="http://skyxg.cn/2024/06/03/2024-05-31_Nacos%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/"><meta property="og:site_name" content="skYxg"><meta property="og:description" content="缓存一致性在分布式系统中是一个常见的问题，针对这个问题不同的业务场景有不同的解决方案，这篇文章主要介绍下Nacos如何解决缓存一致性问题。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202406031634130.png"><meta property="article:published_time" content="2024-06-03T09:18:13.000Z"><meta property="article:modified_time" content="2024-06-03T09:18:13.000Z"><meta property="article:author" content="阿魁"><meta property="article:tag" content="Nacos"><meta property="article:tag" content="Cache"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202406031634130.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://skyxg.cn/2024/06/03/2024-05-31_Nacos%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/"},"headline":"Nacos如何解决缓存一致性问题","image":["https://skyxg.oss-cn-beijing.aliyuncs.com/images/202406031634130.png"],"datePublished":"2024-06-03T09:18:13.000Z","dateModified":"2024-06-03T09:18:13.000Z","author":{"@type":"Person","name":"阿魁"},"publisher":{"@type":"Organization","name":"skYxg","logo":{"@type":"ImageObject","url":{"text":"skYxg"}}},"description":"缓存一致性在分布式系统中是一个常见的问题，针对这个问题不同的业务场景有不同的解决方案，这篇文章主要介绍下Nacos如何解决缓存一致性问题。"}</script><link rel="canonical" href="http://skyxg.cn/2024/06/03/2024-05-31_Nacos%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">skYxg</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-06-03T09:18:13.000Z" title="2024/6/3 17:18:13">2024-06-03</time>发表</span><span class="level-item"><time dateTime="2024-06-03T09:18:13.000Z" title="2024/6/3 17:18:13">2024-06-03</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span><span class="level-item">8 分钟读完 (大约1195个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Nacos如何解决缓存一致性问题</h1><div class="content"><p>缓存一致性在分布式系统中是一个常见的问题，针对这个问题不同的业务场景有不同的解决方案，这篇文章主要介绍下Nacos如何解决缓存一致性问题。</p>
+<span id="more"></span>
+
+<h2 id="Nacos-Config-架构详解：缓存一致性实现方案"><a href="#Nacos-Config-架构详解：缓存一致性实现方案" class="headerlink" title="Nacos Config 架构详解：缓存一致性实现方案"></a>Nacos Config 架构详解：缓存一致性实现方案</h2><p>Nacos 是阿里巴巴开源的一个动态服务发现、配置管理和服务管理平台。其配置管理（Config）模块在分布式系统中具有重要作用。在这一小节，将详细探讨 Nacos Config 的架构设计及其缓存一致性的实现。</p>
+<h3 id="架构概述"><a href="#架构概述" class="headerlink" title="架构概述"></a>架构概述</h3><p>Nacos Config 主要用于分布式系统中的配置管理，支持配置的动态推送和实时更新。在大多数场景中，Nacos Config 采用读多写少的模式：运维端负责写入配置，用户端负责读取配置。为了优化性能，Nacos 采用了读写分离的策略。Nacos 的存储架构主要分为以下三个部分：</p>
+<ul>
+<li><strong>MySQL</strong>：用于存储配置的全量信息。</li>
+<li><strong>Cache</strong>：用于存储配置的元数据（如配置是否灰度、配置的类型信息等元数据）。</li>
+<li><strong>当前节点本地磁盘</strong>：用于存储配置的内容。</li>
+</ul>
+<p>Config存储架构图如下图所示：</p>
+<p><img src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202406031634130.png" alt="image-20240603163408627"></p>
+<h3 id="实现方案详解"><a href="#实现方案详解" class="headerlink" title="实现方案详解"></a>实现方案详解</h3><h4 id="启动时全量加载"><a href="#启动时全量加载" class="headerlink" title="启动时全量加载"></a>启动时全量加载</h4><ul>
+<li>在 Nacos 启动时，系统会将所有配置从 MySQL 中全量导出（Dump）到本地磁盘，并初始化缓存。</li>
+</ul>
+<h4 id="缓存一致性的实现"><a href="#缓存一致性的实现" class="headerlink" title="缓存一致性的实现"></a>缓存一致性的实现</h4><h5 id="配置写"><a href="#配置写" class="headerlink" title="配置写"></a>配置写</h5><p>为了保证 MySQL、当前节点本地磁盘和当前节点缓存之间的配置一致性，Nacos 自己实现了一套机制。以下是 Nacos Config 写操作的五个主要流程：</p>
+<ol>
+<li>持久化（persistent）<ul>
+<li>将配置数据保存到持久化存储（例如 MySQL）中。</li>
+<li>发布 ConfigDumpEvent，通知当前节点进行转储操作。</li>
+</ul>
+</li>
+<li>转储（dump）<ul>
+<li>将持久化存储中的配置数据全量导出到本地磁盘（监听 LocalDataChangeEvent）。</li>
+<li>订阅 ConfigDumpEvent，对配置信息进行转储：<ul>
+<li>将配置内容转储到本地磁盘。</li>
+<li>将配置元数据转储到缓存。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>通知（notify）<ul>
+<li>发布 LocalDataChangeEvent。</li>
+</ul>
+</li>
+<li>推送（push）<ul>
+<li>将最新的配置水平推送到各个节点的缓存中。</li>
+<li>订阅 LocalDataChangeEvent，水平通知其他 Nacos 集群节点进行转储。</li>
+<li>订阅 LocalDataChangeEvent，通知 SDK 进行配置拉取。</li>
+</ul>
+</li>
+<li>拉取（pull）<ul>
+<li>Nacos 集群节点从持久化存储中拉取最新的配置数据。</li>
+<li>SDK 从 Nacos 集群拉取最新配置。</li>
+</ul>
+</li>
+</ol>
+<h6 id="极端场景"><a href="#极端场景" class="headerlink" title="极端场景"></a>极端场景</h6><ul>
+<li><strong>场景一</strong>：写入持久化层后 Nacos 宕机，导致 LocalDataChangeEvent 丢失，未水平通知其他节点进行拉取。</li>
+<li><strong>场景二</strong>：写入持久化层后 Nacos 宕机，导致 LocalDataChangeEvent 丢失，未通知 SDK 进行拉取。</li>
+<li><strong>场景三</strong>：Nacos 集群发生分区，无法通知其他节点。</li>
+</ul>
+<h6 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h6><ul>
+<li>场景一<ul>
+<li>Nacos 通过增量对账Job，每隔 30 秒检查各节点的配置是否是最新的，如果不是最新的，则手动Dump。</li>
+</ul>
+</li>
+<li>场景二<ul>
+<li>SDK 端有一个全量对账机制，每隔 5 分钟进行一次全量对账。</li>
+</ul>
+</li>
+<li>场景三<ul>
+<li>Nacos 存在一个全量对账机制，每隔 6 小时进行一次全量同步。</li>
+</ul>
+</li>
+</ul>
+<h5 id="配置读"><a href="#配置读" class="headerlink" title="配置读"></a>配置读</h5><p>通过User API对配置进行读的流程如下：</p>
+<ul>
+<li>读取配置时，系统首先会从缓存中根据 GroupKey 获取元数据。</li>
+<li>然后去本地磁盘中定位到具体的配置内容。</li>
+<li>进行组合响应给客户端。</li>
+</ul>
+<p>对于Nacos Config的读可以看到未实现强一致性，而是最终一致性。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Nacos 通过自身机制来保证数据的一致性，为了提升性能，引入了缓存（Cache），并进行读写分离，这在一定程度上舍弃了强一致性，在吞吐量和一致性之间取得了平衡，实现了类似 BASE 理论中的最终一致性。作为中间件，Nacos 无法依赖第三方组件来实现一致性，只能通过自身机制来保证，这大大增加了实现的复杂度，需要考虑多种极端场景。而在业务编码中，我们通常可以依赖第三方组件来实现数据一致性，但如果要自行处理，这将变得极其复杂。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Nacos如何解决缓存一致性问题</p><p><a href="http://skyxg.cn/2024/06/03/2024-05-31_Nacos如何解决缓存一致性问题/">http://skyxg.cn/2024/06/03/2024-05-31_Nacos如何解决缓存一致性问题/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>阿魁</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-06-03</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-06-03</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Nacos/">Nacos</a><a class="link-muted mr-2" rel="tag" href="/tags/Cache/">Cache</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/06/03/2023-09-02_JVM%E8%BF%87%E6%97%A9%E6%99%8B%E5%8D%87%E5%BC%95%E5%8F%91%E7%9A%84%E9%97%AE%E9%A2%98/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">JVM过早晋升引发的问题</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/05/29/2024-05-29_Nacos%E5%AE%9E%E7%8E%B0%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0%E7%9A%84%E5%8E%9F%E7%90%86/"><span class="level-item">Nacos实现配置自动刷新的原理</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="SOHUCS" sid="2024/06/03/2024-05-31_Nacos如何解决缓存一致性问题/"></div><script charset="utf-8" src="https://changyan.sohu.com/upload/changyan.js"></script><script>window.changyan.api.config({appid: 'cywVwIcUu',conf: 'prod_14b21b845e15c8a5909669b20d91763c'});</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://skyxg.oss-cn-beijing.aliyuncs.com/images/202310132232883.png" alt="阿魁"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">阿魁</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Changsha, China.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">72</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">2</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/stone-98" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/stone-98"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF/"><span class="level-start"><span class="level-item">技术</span></span><span class="level-end"><span class="level-item tag">65</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E8%AE%B0/"><span class="level-start"><span class="level-item">杂记</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI&amp;CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI-CD/"><span class="tag">CI_CD</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Cache/"><span class="tag">Cache</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GitLab/"><span class="tag">GitLab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Github/"><span class="tag">Github</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Gitlab/"><span class="tag">Gitlab</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Golang/"><span class="tag">Golang</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JUC/"><span class="tag">JUC</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">11</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">29</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java%E5%9F%BA%E7%A1%80/"><span class="tag">Java基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Kubernetes/"><span class="tag">Kubernetes</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nacos/"><span class="tag">Nacos</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Network/"><span class="tag">Network</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RabbitMQ/"><span class="tag">RabbitMQ</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Redis/"><span class="tag">Redis</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Seata/"><span class="tag">Seata</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Spring/"><span class="tag">Spring</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringCloud/"><span class="tag">SpringCloud</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Zookeeper/"><span class="tag">Zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/"><span class="tag">分布式理论</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%95%A5%E5%91%A2/"><span class="tag">啥呢</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%91%E6%AD%A5/"><span class="tag">跑步</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%84%8F%E5%86%99%E5%86%99/"><span class="tag">随意写写</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-06-03T09:18:47.352Z">2024-06-03</time></p><p class="title"><a href="/2024/06/03/2023-09-02_JVM%E8%BF%87%E6%97%A9%E6%99%8B%E5%8D%87%E5%BC%95%E5%8F%91%E7%9A%84%E9%97%AE%E9%A2%98/">JVM过早晋升引发的问题</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-06-03T09:18:13.000Z">2024-06-03</time></p><p class="title"><a href="/2024/06/03/2024-05-31_Nacos%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">Nacos如何解决缓存一致性问题</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-05-29T11:21:04.000Z">2024-05-29</time></p><p class="title"><a href="/2024/05/29/2024-05-29_Nacos%E5%AE%9E%E7%8E%B0%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0%E7%9A%84%E5%8E%9F%E7%90%86/">Nacos实现配置自动刷新的原理</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-05-28T11:49:35.000Z">2024-05-28</time></p><p class="title"><a href="/2024/05/28/2024-05-28_%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81MySQL%E5%92%8CRedis%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">如何保证MySQL和Redis的数据一致性</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-05-22T12:08:09.000Z">2024-05-22</time></p><p class="title"><a href="/2024/05/22/2024-05-22_%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%87%A0%E5%B1%82%E5%8D%8F%E8%AE%AE/">如何保证RabbitMQ消息的顺序性</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></p></div></article></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">skYxg</a><p class="is-size-7"><span>&copy; 2024 阿魁</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
